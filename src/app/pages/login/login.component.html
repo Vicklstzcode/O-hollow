@@ -1,0 +1,197 @@
+<div class="container">
+  <div class="login-card">
+    <!-- Seção de Apresentação -->
+    <div class="login-presentation">
+      <div class="presentation-content">
+        <div class="logo-container">
+          <div class="mystic-circle"></div>
+          <div id="dynamic-logo-symbol" class="dynamic-symbol-container">
+            <!-- O símbolo será inserido aqui dinamicamente depois -->
+          </div>
+        </div>
+
+        <h1 class="site-title">LENDARIUM</h1>
+        <div class="site-summary">
+          <p class="site-description">
+            O arquivo definitivo sobre as entidades mais poderosas dos multiversos. Aqui, você não apenas lê sobre lendas — você as analisa, compara e decide seu destino.
+          </p>
+          <!-- Futuramente transformaremos isso em <app-carousel> -->
+          <div id="features-carousel" class="features-carousel"></div>
+          <p class="site-call-to-action">
+            Adentre o círculo. O conhecimento arcano aguarda.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seção do Formulário -->
+    <div class="login-form-section">
+      <div class="form-container">
+        <div class="form-header">
+          <h1 class="form-title">Portal do Coven</h1>
+          <p class="form-subtitle">Adentre o círculo sagrado</p>
+        </div>
+
+        <!-- Removemos action e method. Usamos (ngSubmit) -->
+        <form class="login-form" (ngSubmit)="fazerLogin()">
+          <div>
+            <label for="username" class="form-label">Usuário</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              class="form-input"
+              required
+              placeholder="Digite seu usuário..."
+            />
+          </div>
+
+          <div>
+            <label for="password" class="form-label">Senha</label>
+            <div class="password-input-wrapper">
+              <!-- A mágica do Angular: troca o tipo do input dinamicamente -->
+              <input
+                [type]="mostrarSenha ? 'text' : 'password'"
+                id="password"
+                name="password"
+                class="form-input password-input"
+                required
+                placeholder="Digite sua senha..."
+              />
+              <button
+                type="button"
+                class="toggle-password"
+                (click)="alternarVisualizacaoSenha()"
+                aria-label="Mostrar senha"
+              >
+                <!-- Alterna o ícone visualmente (simples texto por enquanto) -->
+                {{ mostrarSenha ? 'ᛝ' : 'ᛈ' }}
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-button">
+            Entrar no Coven
+          </button>
+        </form>
+
+        <div class="divider">
+          <div class="divider-line"></div>
+          <span class="divider-text">ou</span>
+          <div class="divider-line"></div>
+        </div>
+
+        <div class="social-login">
+          <p class="social-login-title">Use sua conta preferida</p>
+          <div class="social-buttons">
+            <button type="button" class="social-button google" aria-label="Entrar com Google">
+              G
+            </button>
+            <button type="button" class="social-button discord" aria-label="Entrar com Discord">
+              D
+            </button>
+          </div>
+        </div>
+
+        <div class="register-link">
+          <p>
+            Novo iniciado?
+            <!-- Botão que abre o modal -->
+            <button
+              type="button"
+              class="register-modal-trigger"
+              (click)="abrirModalCadastro()"
+            >
+              Crie seu Coven ᚨᚱᛚᚹ ᛟᛉᚢᚾ
+            </button>
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL DE CADASTRO ===== -->
+<!-- *ngIf é a forma Angular de esconder/mostrar coisas -->
+<div class="modal-overlay" *ngIf="exibirModal">
+  <div class="modal-content">
+    <button
+      class="modal-close-btn"
+      aria-label="Fechar modal"
+      (click)="fecharModalCadastro()"
+    >
+      &times;
+    </button>
+
+    <div class="form-header">
+      <h1 class="form-title">Crie seu Coven</h1>
+      <p class="form-subtitle">
+        Junte-se ao círculo e desvende os segredos
+      </p>
+    </div>
+
+    <form class="login-form" (ngSubmit)="fazerCadastro()">
+      <div>
+        <label for="regUsername" class="form-label">Usuário</label>
+        <input
+          type="text"
+          id="regUsername"
+          class="form-input"
+          required
+          placeholder="Escolha seu nome arcano..."
+        />
+      </div>
+      <div>
+        <label for="regEmail" class="form-label">Email</label>
+        <input
+          type="email"
+          id="regEmail"
+          class="form-input"
+          required
+          placeholder="Seu portal de comunicação..."
+        />
+      </div>
+      <div>
+        <label for="regPassword" class="form-label">Senha</label>
+        <input
+          type="password"
+          id="regPassword"
+          class="form-input"
+          required
+          placeholder="Crie uma chave secreta..."
+        />
+      </div>
+
+      <!-- Seção LGPD -->
+      <div class="lgpd-section">
+        <h3 class="lgpd-title">Termos e Condições (LGPD)</h3>
+        <div class="lgpd-terms">
+          <p>
+            Ao se registrar no Lendarium, você concorda com a coleta e
+            processamento dos seus dados...
+            <a
+              href="http://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="lgpd-link"
+              >Lei Geral de Proteção de Dados (LGPD)</a
+            >.
+          </p>
+        </div>
+        <div class="lgpd-consent">
+          <input type="checkbox" id="lgpdAccept" required />
+          <label for="lgpdAccept">Eu li e aceito os termos e condições.</label>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="submit-button"
+        
+      >
+        Finalizar Iniciação
+      </button>
+    </form>
+  </div>
+</div>
