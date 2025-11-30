@@ -9,8 +9,8 @@
       <div class="flex items-center justify-between h-16">
         <div
           class="flex items-center gap-2 cursor-pointer"
-          (click)="window.scrollTo(0, 0)"
-        >
+          (click)="scrollToTop()"
+        > 
           <div
             class="w-10 h-10 bg-gradient-to-br from-purple-600 to-cyan-500 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.5)]"
           >
@@ -63,12 +63,14 @@
 
         <div class="flex items-center gap-4">
           <a
+            *ngIf="!usuarioLogado"
             routerLink="/login"
             class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full text-sm transition-all border border-white/5 cursor-pointer"
           >
             Login
           </a>
           <button
+            *ngIf="usuarioLogado"
             (click)="sair()"
             class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full text-sm transition-all border border-white/5 cursor-pointer"
           >
@@ -78,6 +80,10 @@
       </div>
     </div>
   </nav>
+
+  <button *ngIf="mostrarBotaoVoltarAoTopo" (click)="scrollToTop()" class="fixed bottom-5 right-5 bg-purple-600 text-white p-3 rounded-full shadow-lg hover:bg-purple-700 transition-all z-50">
+    <i data-lucide="arrow-up" class="w-6 h-6"></i>
+  </button>
 
   <main class="pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-12">
     <div
@@ -144,7 +150,7 @@
       >
         <div class="w-full h-full relative">
           <img
-            [src]="carouselItems[carouselIndex]?.image"
+            [src]="carouselItems[carouselIndex].image"
             class="w-full h-full object-cover transition-all duration-500"
           />
         </div>
@@ -153,10 +159,10 @@
           class="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-black via-black/80 to-transparent z-10"
         >
           <h3 class="text-3xl font-bold text-white mb-1">
-            {{ carouselItems[carouselIndex]?.name }}
+            {{ carouselItems[carouselIndex].name }}
           </h3>
           <p class="text-purple-400 font-medium">
-            {{ carouselItems[carouselIndex]?.alias }}
+            {{ carouselItems[carouselIndex].alias }}
           </p>
         </div>
 
@@ -302,7 +308,7 @@
               class="w-32 h-32 md:w-48 md:h-48 rounded-full border-4 border-red-500 overflow-hidden mb-4 shadow-[0_0_30px_rgba(220,38,38,0.4)] transition-transform group-hover:scale-110"
             >
               <img
-                src="assets/imagens/Ww.jpg"
+                src="imagens/Ww.jpg"
                 class="w-full h-full object-cover"
               />
             </div>
@@ -322,7 +328,7 @@
               class="w-32 h-32 md:w-48 md:h-48 rounded-full border-4 border-blue-500 overflow-hidden mb-4 shadow-[0_0_30px_rgba(37,99,235,0.4)] transition-transform group-hover:scale-110"
             >
               <img
-                src="assets/imagens/DoutorEstranho.jpg"
+                src="imagens/DoutorEstranho.jpg"
                 class="w-full h-full object-cover"
               />
             </div>

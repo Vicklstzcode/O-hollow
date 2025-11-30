@@ -1,44 +1,45 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, AfterViewInit, OnDestroy, Inject, HostListener } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { CharacterService, Character } from '../../services/character.service';
 import { AuthService } from '../../services/auth.service';
+
 // Declaração para os ícones Lucide
 declare var lucide: any;
-
-@Component({ template: '' }) // Adicione um decorador @Component mínimo
-export class HomeComponent_Temp implements OnInit {
-  
-  constructor(
-    private characterService: CharacterService,
-    private router: Router,
-    private authService: AuthService // <--- Adicione
-  ) {}
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
-  }
-
-  // ... resto do código ...
-
-  // Adicione esta função
-  sair() {
-    this.authService.logout();
-  }
-}
-
-
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
-sair() {
-throw new Error('Method not implemented.');
-}
+  // === CONTROLE DE INTERFACE ===
+  mostrarBotaoVoltarAoTopo: boolean = false;
+
+  // === AUTENTICAÇÃO ===
+  get usuarioLogado(): boolean {
+    return this.authService.isAuthenticated();
+  }
+
+  sair() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
+  // === SCROLL TO TOP ===
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const offset = this.document.documentElement.scrollTop || this.document.body.scrollTop || 0;
+    this.mostrarBotaoVoltarAoTopo = offset > 200;
+  }
+
+  scrollToTop() {
+    this.document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
+    this.document.body.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  
   
   // === DADOS ===
   todosPersonagens: Character[] = [];
@@ -52,18 +53,19 @@ throw new Error('Method not implemented.');
   // === CARROSSEL ===
   carouselIndex: number = 0;
   carouselItems: Character[] = [];
-  private intervaloCarrossel: any;
+  private intervaloCarrossel: number | undefined;
 
   // === ARENA DE BATALHA ===
   votosWanda: number = 0;
   votosStrange: number = 0;
   porcentagemWanda: number = 50;
   porcentagemStrange: number = 50;
-window: any;
 
   constructor(
     private characterService: CharacterService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService,
+    @Inject(DOCUMENT) private document: Document
   ) {}
 
   ngOnInit() {

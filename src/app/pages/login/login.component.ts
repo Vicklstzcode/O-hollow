@@ -22,7 +22,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   simbolos: string[] = ["ᱬ", "۞", "⚜️", "ᛝ", "⚡", "💀", "🩸", "🌩️"];
   simboloAtual: string = this.simbolos[0];
   opacidadeLogo: number = 1;
-  private intervaloLogo: any;
+  private intervaloLogo: number | undefined;
 
   // === CARROSSEL DE TEXTOS ===
   features = [
@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   featureAtualIndex: number = 0;
   featureAtual = this.features[0];
   classeAnimacaoCarrossel: string = 'slide-in';
-  private intervaloCarrossel: any;
+  private intervaloCarrossel: number | undefined;
 
   // Injetamos o AuthService e o Router
   constructor(
