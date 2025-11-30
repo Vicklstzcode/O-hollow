@@ -1,0 +1,34 @@
+/* Glass Panel */
+.glass-panel {
+    background: rgba(18, 18, 18, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Gráficos Responsivos */
+canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Badges Customizados */
+.bg-purple-500\/10 {
+    background-color: rgba(168, 85, 247, 0.1);
+}
+
+.bg-red-500\/10 {
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.bg-amber-500\/10 {
+    background-color: rgba(245, 158, 11, 0.1);
+}
+
+.bg-blue-500\/10 {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.bg-green-500\/10 {
+    background-color: rgba(34, 197, 94, 0.1);
+}

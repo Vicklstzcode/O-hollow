@@ -1,1 +1,201 @@
-<p>personagens-detalhes works!</p>
+<nav
+  class="navbar navbar-expand-sm navbar-dark bg-dark sticky-top border-bottom border-secondary"
+>
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/home">CodMysticos</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#mynavbar"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mynavbar">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/home">Início</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/dashboard">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/favoritos">Favoritos</a>
+        </li>
+        <li class="nav-item"><a class="nav-link active">Personagens</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="page-container" *ngIf="personagem; else notFound">
+  <section class="character-hero position-relative">
+    <img
+      [src]="personagem.image"
+      [alt]="personagem.name"
+      class="character-hero-img"
+    />
+    <div class="character-hero-overlay"></div>
+
+    <div class="character-hero-content">
+      <div class="container-xl">
+        <button
+          (click)="voltarPagina()"
+          class="btn btn-outline-light btn-sm mb-3"
+        >
+          <i class="bi bi-arrow-left me-2"></i> Voltar
+        </button>
+
+        <span class="badge rounded-pill bg-primary mb-3">{{
+          personagem.universe
+        }}</span>
+
+        <h1 class="character-hero-title text-white fw-bold display-4">
+          {{ personagem.name }}
+        </h1>
+        <p class="character-hero-alias text-info fs-4">
+          {{ personagem.alias }}
+        </p>
+        <p class="character-hero-description text-gray-300 lead">
+          {{
+            personagem.history
+              ? (personagem.history | slice : 0 : 150) + "..."
+              : "Sem descrição."
+          }}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-xl py-5">
+    <div class="row g-4 g-lg-5">
+      <div class="col-lg-8">
+        <div class="d-flex flex-column gap-4">
+          <div
+            class="info-card p-4 rounded bg-dark border border-secondary text-light"
+          >
+            <div
+              class="info-card-header border-bottom border-secondary pb-2 mb-3"
+            >
+              <h2 class="info-card-title h4">Biografia</h2>
+            </div>
+            <div class="info-card-body">
+              <p class="info-card-text">
+                {{ personagem.history || "História não disponível." }}
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="info-card p-4 rounded bg-dark border border-secondary text-light"
+          >
+            <div
+              class="info-card-header border-bottom border-secondary pb-2 mb-3"
+            >
+              <h2 class="info-card-title h4">Poderes e Habilidades</h2>
+            </div>
+            <div class="info-card-body">
+              <div class="row g-3">
+                <div
+                  class="col-md-6"
+                  *ngFor="let poder of personagem.abilities"
+                >
+                  <div
+                    class="power-item d-flex align-items-center gap-2 p-2 rounded"
+                    style="
+                      background: rgba(139, 92, 246, 0.1);
+                      border: 1px solid rgba(139, 92, 246, 0.2);
+                    "
+                  >
+                    <div
+                      class="power-item-dot rounded-circle bg-info"
+                      style="width: 8px; height: 8px"
+                    ></div>
+                    <span>{{ poder }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="d-flex flex-column gap-4">
+          <div
+            class="info-card p-4 rounded bg-dark border border-secondary text-light"
+          >
+            <div
+              class="info-card-header border-bottom border-secondary pb-2 mb-3"
+            >
+              <h2 class="info-card-title h4">Ações</h2>
+            </div>
+            <div class="info-card-body d-flex flex-column gap-3">
+              <button
+                class="btn w-100 d-flex align-items-center justify-content-center gap-2"
+                [ngClass]="ehFavorito ? 'btn-danger' : 'btn-outline-danger'"
+                (click)="toggleFavorito()"
+              >
+                <i
+                  class="bi"
+                  [ngClass]="ehFavorito ? 'bi-heart-fill' : 'bi-heart'"
+                ></i>
+                {{
+                  ehFavorito
+                    ? "Remover dos Favoritos"
+                    : "Adicionar aos Favoritos"
+                }}
+              </button>
+
+              <button class="btn btn-outline-info w-100">
+                <i class="bi bi-pencil-square me-2"></i> Editar
+              </button>
+              <button class="btn btn-outline-secondary w-100">
+                <i class="bi bi-trash me-2"></i> Excluir
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="info-card p-4 rounded bg-dark border border-secondary text-light"
+          >
+            <div
+              class="info-card-header border-bottom border-secondary pb-2 mb-3"
+            >
+              <h2 class="info-card-title h4">Informações</h2>
+            </div>
+            <div class="info-card-body d-flex flex-column gap-3">
+              <div class="d-flex justify-content-between">
+                <span class="text-info">Tipo</span>
+                <span class="text-white">{{ personagem.type }}</span>
+              </div>
+              <hr class="border-secondary my-1" />
+              <div class="d-flex justify-content-between">
+                <span class="text-info">Afiliação</span>
+                <span class="text-white">{{
+                  personagem.affiliations
+                    ? personagem.affiliations[0]
+                    : "Nenhuma"
+                }}</span>
+              </div>
+              <hr class="border-secondary my-1" />
+              <div class="d-flex justify-content-between">
+                <span class="text-info">Status</span>
+                <span class="badge bg-success">Ativo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<ng-template #notFound>
+  <div class="container text-center py-5 text-white">
+    <h2>Personagem não encontrado</h2>
+    <button class="btn btn-primary mt-3" routerLink="/home">
+      Voltar para Home
+    </button>
+  </div>
+</ng-template>

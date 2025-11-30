@@ -1,3 +1,7 @@
+/* ===== RESET E BASE ===== */
+/* Nota: Em Angular, estilos globais como body devem ir no styles.css global, 
+   mas aqui funcionará para o componente exceto o body background */
+
 /* ===== CONTAINER PRINCIPAL ===== */
 .container {
     display: flex;
@@ -47,13 +51,32 @@
 }
 
 @keyframes slideInFromRight {
-    from { opacity: 0; transform: translateX(100%); }
-    to { opacity: 1; transform: translateX(0); }
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 @keyframes slideOutToLeft {
-    from { opacity: 1; transform: translateX(0); }
-    to { opacity: 0; transform: translateX(-100%); }
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+}
+
+.feature-item {
+    /* Ajuste para garantir layout correto na troca */
+    width: 100%;
 }
 
 .feature-item.slide-in {
@@ -63,7 +86,6 @@
 .feature-item.slide-out {
     animation: slideOutToLeft 0.5s ease-in forwards;
 }
-
 
 @keyframes shimmer {
 
@@ -144,30 +166,23 @@
     animation: pulse-glow 8s ease-in-out infinite;
 }
 
-.logo-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-/* Estilo para o símbolo dinâmico no logo */
+/* Símbolo dinâmico */
 .dynamic-symbol-container {
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 150px; /* Tamanho grande para o símbolo */
+    font-size: 150px;
     font-weight: bold;
     background: linear-gradient(135deg, #ffffff 0%, #a855f7 50%, #ec4899 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
-    transition: opacity 0.5s ease-in-out; /* Transição de fade */
+    transition: opacity 0.5s ease-in-out;
     opacity: 1;
 }
-
 
 .mystic-circle {
     position: absolute;
@@ -212,37 +227,33 @@
     animation: slideDown 0.8s ease-out 0.5s both;
 }
 
-.site-summary {
-    animation: slideUp 0.8s ease-out 0.7s both;
-}
-
 .features-carousel {
-  margin: 2.5rem 0;
-  height: 80px; /* Altura fixa para evitar pulos no layout */
-  position: relative;
-  overflow: hidden;
+    margin: 2.5rem 0;
+    height: 80px;
+    position: relative;
+    overflow: hidden;
 }
 
 .feature-item {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  background: rgba(168, 85, 247, 0.05);
-  border: 1px solid rgba(168, 85, 247, 0.1);
-  border-radius: 0.75rem;
-  backdrop-filter: blur(5px);
-  color: #d1d5db;
-  font-size: 0.95rem;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(168, 85, 247, 0.05);
+    border: 1px solid rgba(168, 85, 247, 0.1);
+    border-radius: 0.75rem;
+    backdrop-filter: blur(5px);
+    color: #d1d5db;
+    font-size: 0.95rem;
 }
 
 .feature-icon {
-  font-size: 1.5rem;
-  color: #a855f7;
-  min-width: 30px;
-  text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+    font-size: 1.5rem;
+    color: #a855f7;
+    min-width: 30px;
+    text-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
 }
 
 .site-call-to-action {
@@ -332,26 +343,6 @@
     border-color: rgba(147, 51, 234, 0.3);
 }
 
-/* Mensagem de Erro */
-.error-message {
-    display: none;
-    /* Oculto por padrão */
-    background-color: rgba(239, 68, 68, 0.1);
-    color: #fca5a5;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    border-radius: 0.5rem;
-    padding: 0.75rem 1rem;
-    text-align: center;
-    font-size: 0.875rem;
-    margin-bottom: 1rem;
-    animation: slideDown 0.3s ease-out;
-}
-
-.error-message.show {
-    display: block;
-    /* Exibido quando a classe .show é adicionada */
-}
-
 /* Input de Senha */
 .password-input-wrapper {
     position: relative;
@@ -399,28 +390,20 @@
     overflow: hidden;
 }
 
-.submit-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left 0.6s;
-}
-
 .submit-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 20px 25px -5px rgba(147, 51, 234, 0.4);
 }
 
-.submit-button:hover::before {
-    left: 100%;
-}
-
 .submit-button:active {
     transform: translateY(0);
+}
+
+.submit-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 /* Divider */
@@ -452,15 +435,20 @@
     font-size: 0.875rem;
 }
 
-.register-link a {
+.register-modal-trigger {
+    background: none;
+    border: none;
     color: #a855f7;
     text-decoration: none;
     transition: all 0.3s ease;
     margin-left: 0.25rem;
     font-weight: 500;
+    font-size: inherit;
+    font-family: inherit;
+    cursor: pointer;
 }
 
-.register-link a:hover {
+.register-modal-trigger:hover {
     color: #d8b4fe;
     text-decoration: underline;
 }
@@ -507,14 +495,6 @@
     box-shadow: 0 10px 15px -3px rgba(147, 51, 234, 0.2);
 }
 
-.social-button.google:hover {
-    color: #DB4437;
-}
-
-.social-button.discord:hover {
-    color: #5865F2;
-}
-
 /* ===== MODAL DE CADASTRO ===== */
 .modal-overlay {
     position: fixed;
@@ -557,25 +537,6 @@
     color: #d8b4fe;
 }
 
-/* Botão que abre o modal */
-.register-modal-trigger {
-    background: none;
-    border: none;
-    color: #a855f7;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    margin-left: 0.25rem;
-    font-weight: 500;
-    font-size: inherit;
-    font-family: inherit;
-    cursor: pointer;
-}
-
-.register-modal-trigger:hover {
-    color: #d8b4fe;
-    text-decoration: underline;
-}
-
 /* Seção LGPD dentro do modal */
 .lgpd-section {
     margin-top: 1.5rem;
@@ -599,36 +560,13 @@
     color: #9ca3af;
     line-height: 1.6;
     padding-right: 0.5rem;
-    /* Espaço para a scrollbar */
 }
 
 .lgpd-terms .lgpd-link {
-    color: #c084fc; /* Roxo claro para destaque */
+    color: #c084fc;
     text-decoration: underline;
-    text-decoration-thickness: 1px;
     text-underline-offset: 2px;
     transition: color 0.3s ease;
-}
-.lgpd-terms .lgpd-link:hover {
-    color: #e9d5ff; /* Roxo ainda mais claro no hover */
-}
-
-/* Scrollbar da caixa de termos */
-.lgpd-terms::-webkit-scrollbar {
-    width: 6px;
-}
-
-.lgpd-terms::-webkit-scrollbar-track {
-    background: rgba(24, 24, 27, 0.5);
-}
-
-.lgpd-terms::-webkit-scrollbar-thumb {
-    background: #4c1d95;
-    border-radius: 3px;
-}
-
-.lgpd-terms::-webkit-scrollbar-thumb:hover {
-    background: #7c3aed;
 }
 
 .lgpd-consent {
@@ -673,7 +611,6 @@
     .site-title {
         font-size: 2rem;
     }
-
 }
 
 @media (max-width: 640px) {

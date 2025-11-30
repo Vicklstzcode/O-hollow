@@ -1,38 +1,98 @@
 import { Injectable } from '@angular/core';
+import { CHARACTERS_DATA } from '../data/characters-data'; // Importa a "API"
 
+// A interface agora deve incluir todos os campos que usamos
 export interface Character {
   id: number;
   name: string;
   alias: string;
-  universe: string; // 'Marvel', 'DC', 'TVDU', etc
-  image: string;
+  universe: string;
+  type: string;
   power: string;
-  powerLevel: number; // 0 a 100
-  color: string; // Ex: #ff0000
-  type?: string; // 'Magic', 'Tech', etc
+  image: string;
+  color: string;
+  symbol?: string;
+  history?: string;
+  powerLevel: number;
+  affiliations?: string[];
+  weaknesses?: string[];
+  abilities?: string[];
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class CharacterService {
-  
-  // === SEU ARRAY DE DADOS (Substitua pelos dados do seu data.js) ===
-  private characters: Character[] = [
-    { id: 1, name: 'Wanda Maximoff', alias: 'Feiticeira Escarlate', universe: 'Marvel', image: 'assets/imagens/Ww.jpg', power: 'Manipulação da Realidade', powerLevel: 100, color: '#ef4444', type: 'Magic' },
-    { id: 2, name: 'Doctor Strange', alias: 'Mago Supremo', universe: 'Marvel', image: 'assets/imagens/DoutorEstranho.jpg', power: 'Artes Místicas', powerLevel: 95, color: '#3b82f6', type: 'Magic' },
-    { id: 3, name: 'Batman', alias: 'O Cavaleiro das Trevas', universe: 'DC', image: 'assets/imagens/batman.jpg', power: 'Inteligência e Tecnologia', powerLevel: 85, color: '#fbbf24', type: 'Tech' },
-    { id: 4, name: 'Superman', alias: 'O Homem de Aço', universe: 'DC', image: 'assets/imagens/superman.jpg', power: 'Kryptoniano', powerLevel: 99, color: '#3b82f6', type: 'Tech' },
-    // ... adicione o resto da sua lista aqui
-  ];
+
+  // Carrega os dados iniciais
+  // Nota: Em uma app real, isso viria de um http.get()
+  private characters: Character[] = CHARACTERS_DATA;
+
+  private universesData: any = {
+    'Marvel': {
+      name: 'Marvel',
+      description: 'Um vasto multiverso de heróis e vilões, onde a magia se encontra com a ciência avançada e mutações genéticas.',
+      image: 'assets/imagens/marvel-bg.jpg', 
+      characterCount: 0
+    },
+    'DC': {
+      name: 'DC Comics',
+      description: 'O lar dos maiores ícones da justiça, deuses entre nós e detetives sombrios protegendo a humanidade.',
+      image: 'assets/imagens/dc-bg.jpg',
+      characterCount: 0
+    },
+    'TVDU': {
+      name: 'The Vampire Diaries Universe',
+      description: 'Um mundo sobrenatural oculto onde vampiros, bruxas e lobisomens lutam por poder e sobrevivência.',
+      image: 'assets/imagens/tvdu-bg.jpg',
+      characterCount: 0
+    }
+  };
 
   constructor() { }
+
+  // === MÉTODOS DE LEITURA ===
 
   getCharacters() {
     return this.characters;
   }
 
-  // === LÓGICA DE FAVORITOS (LocalStorage) ===
+  getCharacterById(id: number): Character | undefined {
+    return this.characters.find(c => c.id === id);
+  }
+
+  getCharactersByUniverse(universeName: string): Character[] {
+    return this.characters.filter(c => c.universe === universeName);
+  }
+
+  getUniverseInfo(name: string) {
+    const info = this.universesData[name] || {
+      name: name,
+      description: 'Um universo misterioso com segredos ainda não revelados.',
+      image: 'assets/imagens/default-universe.jpg',
+      characterCount: 0
+    };
+    
+    const count = this.characters.filter(c => c.universe === name).length;
+    return { ...info, characterCount: count };
+  }
+
+  // === MÉTODOS DE ESCRITA (Adicionar Personagem) ===
+
+  addCharacter(newChar: Character) {
+    // Gera um ID novo (pega o último ID + 1)
+    const newId = this.characters.length > 0 
+        ? Math.max(...this.characters.map(c => c.id)) + 1 
+        : 1;
+    
+    newChar.id = newId;
+    this.characters.push(newChar);
+    
+    console.log('Personagem adicionado:', newChar);
+  }
+
+  // === FAVORITOS E VOTAÇÃO (Mantidos) ===
+
   getFavorites(): number[] {
     const favs = localStorage.getItem('favorites');
     return favs ? JSON.parse(favs) : [];
@@ -44,16 +104,15 @@ export class CharacterService {
     let isAdded = false;
 
     if (index > -1) {
-      favs.splice(index, 1); // Remove
+      favs.splice(index, 1);
     } else {
-      favs.push(id); // Adiciona
+      favs.push(id);
       isAdded = true;
     }
     localStorage.setItem('favorites', JSON.stringify(favs));
     return isAdded;
   }
 
-  // === LÓGICA DA ARENA (LocalStorage) ===
   getBattleVotes() {
     const votes = localStorage.getItem('battleArenaVotes');
     return votes ? JSON.parse(votes) : { wanda: 0, strange: 0 };

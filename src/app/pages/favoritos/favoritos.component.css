@@ -1,0 +1,50 @@
+/* ===== ESTILOS ESPECÍFICOS DE FAVORITOS ===== */
+
+/* Destaque no Menu (O brilho rosa que você pediu) */
+.nav-item-active {
+    color: white !important;
+    text-shadow: 0 0 8px rgba(236, 72, 153, 0.7);
+    /* Pink Glow */
+}
+
+/* Partículas no fundo */
+#particles-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    /* Permite clicar no conteúdo acima */
+}
+
+/* ===== REFORÇOS VISUAIS ===== */
+
+/* Painel de Vidro */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+/* Efeito Neon nos Cards */
+.neon-hover {
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.neon-hover:hover {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+    /* Roxo */
+    border-color: rgba(168, 85, 247, 0.5);
+    transform: translateY(-5px);
+}
+
+/* Ajuste para telas menores */
+@media (max-width: 768px) {
+    .glass-panel {
+        padding: 1.5rem;
+    }
+}

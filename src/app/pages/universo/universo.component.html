@@ -1,1 +1,113 @@
-<p>universo works!</p>
+<nav
+  class="navbar navbar-expand-sm navbar-dark bg-dark sticky-top border-bottom border-secondary"
+>
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/home">Mysticos</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#mynavbar"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mynavbar">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/home">Início</a>
+        </li>
+        <li class="nav-item"><a class="nav-link active">Universos</a></li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/favoritos">Favoritos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/home">Personagens</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="page-container body-gradient" *ngIf="universoInfo">
+  <section class="universe-hero">
+    <img
+      [src]="universoInfo.image"
+      [alt]="universoInfo.name"
+      class="universe-hero-img"
+    />
+    <div class="universe-hero-overlay-gradient"></div>
+    <div class="universe-hero-overlay-color"></div>
+
+    <div class="universe-hero-content">
+      <div class="container-xl">
+        <button
+          (click)="voltarPagina()"
+          class="btn btn-back mb-3 d-flex align-items-center gap-2"
+        >
+          <i class="bi bi-arrow-left"></i> Voltar
+        </button>
+
+        <h1 class="universe-title">{{ universoInfo.name }}</h1>
+        <p class="universe-description">
+          {{ universoInfo.description }}
+        </p>
+
+        <div class="universe-meta">
+          <i class="bi bi-people-fill"></i>
+          <span>{{ universoInfo.characterCount }} Personagens</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-xl py-5">
+    <div class="row g-4">
+      <div class="col-12 col-md-6 col-lg-4" *ngFor="let char of personagens">
+        <a [routerLink]="['/detalhes', char.id]" class="character-card-link">
+          <div class="character-card">
+            <div class="character-card-image-wrapper">
+              <img
+                [src]="char.image"
+                [alt]="char.name"
+                class="character-card-img"
+              />
+              <div class="character-card-img-overlay"></div>
+
+              <span class="character-status-badge">Vivo</span>
+            </div>
+
+            <div class="character-card-body">
+              <h3 class="character-name">{{ char.name }}</h3>
+              <p class="character-alias">{{ char.alias }}</p>
+              <p class="character-bio">
+                {{
+                  char.history
+                    ? (char.history | slice : 0 : 100) + "..."
+                    : "Sem biografia."
+                }}
+              </p>
+
+              <div class="character-powers">
+                <span
+                  class="power-badge"
+                  *ngFor="let power of char.abilities?.slice(0, 3)"
+                >
+                  {{ power }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-12" *ngIf="personagens.length === 0">
+        <div class="text-center py-5">
+          <i class="bi bi-stars display-1 text-muted"></i>
+          <p class="fs-5 mt-3" style="color: var(--color-purple-text-light)">
+            Nenhum personagem encontrado neste universo ainda.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

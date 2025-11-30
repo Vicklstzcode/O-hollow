@@ -1,1 +1,239 @@
-<p>detalhes works!</p>
+<canvas id="particles-canvas"></canvas>
+
+<div
+  id="toast-container"
+  class="fixed top-4 right-4 z-[60]"
+  *ngIf="exibirToast"
+>
+  <div
+    class="toast animate-fade-in-up bg-white text-black px-4 py-3 rounded shadow-lg flex items-center gap-3 border-l-4"
+    [ngClass]="tipoToast === 'success' ? 'border-green-500' : 'border-blue-500'"
+  >
+    <i
+      [attr.data-lucide]="tipoToast === 'success' ? 'check-circle' : 'info'"
+      class="w-5 h-5"
+      [ngClass]="tipoToast === 'success' ? 'text-green-600' : 'text-blue-600'"
+    ></i>
+    <span class="font-medium text-sm">{{ mensagemToast }}</span>
+  </div>
+</div>
+
+<div class="min-h-screen relative">
+  <nav
+    id="navbar"
+    class="fixed top-0 left-0 right-0 z-50 bg-black/70 backdrop-blur-lg border-b border-white/5"
+  >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a routerLink="/home" class="flex items-center gap-2 cursor-pointer">
+          <div
+            class="w-10 h-10 bg-gradient-to-br from-purple-600 to-cyan-500 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.5)]"
+          >
+            <i data-lucide="zap" class="w-6 h-6 text-white"></i>
+          </div>
+          <div>
+            <h1
+              class="text-sm tracking-wider font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400"
+            >
+              S.M.M.
+            </h1>
+            <p class="text-[10px] text-cyan-400 tracking-[0.2em]">SYSTEM 2.0</p>
+          </div>
+        </a>
+        <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+          <a
+            routerLink="/home"
+            class="text-gray-400 hover:text-purple-400 transition-colors"
+            >Início</a
+          >
+          <a
+            routerLink="/favoritos"
+            class="text-gray-400 hover:text-purple-400 transition-colors"
+            >Favoritos</a
+          >
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="pt-24 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-5xl mx-auto mb-8">
+      <button
+        (click)="voltarPagina()"
+        class="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors group cursor-pointer"
+      >
+        <i
+          data-lucide="arrow-left"
+          class="w-4 h-4 group-hover:-translate-x-1 transition-transform"
+        ></i>
+        Voltar para a Home
+      </button>
+    </div>
+
+    <div
+      *ngIf="!encontrado || !personagem"
+      class="text-center py-20 animate-fade-in-up glass-panel rounded-xl"
+    >
+      <i
+        data-lucide="search-x"
+        class="w-16 h-16 text-red-500/50 mx-auto mb-4"
+      ></i>
+      <h2 class="text-2xl font-bold text-white">Personagem não encontrado</h2>
+      <p class="text-gray-400 mt-2">
+        O ID fornecido não corresponde a nenhum personagem.
+      </p>
+    </div>
+
+    <div
+      *ngIf="personagem"
+      class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 glass-panel p-8 rounded-2xl animate-fade-in-up"
+    >
+      <div class="md:col-span-1">
+        <div
+          class="aspect-[3/4] rounded-xl overflow-hidden shadow-2xl border border-white/10 relative group"
+        >
+          <img
+            [src]="personagem.image"
+            [alt]="personagem.name"
+            class="w-full h-full object-cover"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"
+          ></div>
+        </div>
+      </div>
+
+      <div class="md:col-span-2 flex flex-col">
+        <div class="mb-6">
+          <span
+            class="text-sm font-bold tracking-widest uppercase"
+            [style.color]="personagem.color"
+          >
+            {{ personagem.universe }}
+          </span>
+          <div class="flex items-center gap-4">
+            <h1
+              class="text-5xl md:text-6xl font-bold text-white mt-1 leading-tight"
+            >
+              {{ personagem.name }}
+            </h1>
+
+            <button
+              (click)="toggleFavorito()"
+              class="p-3 rounded-full transition-colors mt-2 cursor-pointer"
+              [ngClass]="
+                ehFavorito
+                  ? 'bg-pink-600 text-white shadow-[0_0_15px_rgba(236,72,153,0.5)]'
+                  : 'bg-white/10 text-white hover:bg-pink-600/50'
+              "
+            >
+              <i
+                data-lucide="heart"
+                class="w-6 h-6"
+                [ngClass]="{ 'fill-white': ehFavorito }"
+              ></i>
+            </button>
+          </div>
+          <p class="text-xl text-gray-400 mt-1">{{ personagem.alias }}</p>
+        </div>
+
+        <div class="mb-8" *ngIf="personagem.history">
+          <h3 class="font-bold text-lg text-white mb-2 flex items-center gap-2">
+            <i data-lucide="book-open" class="w-4 h-4 text-purple-400"></i>
+            História
+          </h3>
+          <p class="text-gray-400 leading-relaxed text-sm md:text-base">
+            {{ personagem.history }}
+          </p>
+        </div>
+
+        <div class="mb-8">
+          <h3 class="font-bold text-lg text-white mb-4 flex items-center gap-2">
+            <i data-lucide="zap" class="w-4 h-4 text-yellow-400"></i> Poderes e
+            Habilidades
+          </h3>
+
+          <div class="power-item">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-sm font-medium text-gray-300">{{
+                personagem.power
+              }}</span>
+              <span class="text-xs font-mono text-gray-500"
+                >Nível {{ personagem.powerLevel }}/100</span
+              >
+            </div>
+            <div class="w-full bg-white/10 rounded-full h-2.5 overflow-hidden">
+              <div
+                class="h-2.5 rounded-full transition-all duration-1000 ease-out power-bar-fill"
+                [style.width.%]="personagem.powerLevel"
+                [style.background-color]="personagem.color"
+                [style.box-shadow]="'0 0 10px ' + personagem.color"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 gap-8 mt-auto pt-8 border-t border-white/10"
+        >
+          <div>
+            <h3
+              class="font-bold text-lg text-white mb-3 flex items-center gap-2"
+            >
+              <i data-lucide="users" class="w-4 h-4 text-cyan-400"></i>
+              Afiliações
+            </h3>
+            <div class="flex flex-wrap gap-2">
+              <span *ngFor="let aff of personagem.affiliations" class="badge">
+                {{ aff }}
+              </span>
+              <span
+                *ngIf="!personagem.affiliations"
+                class="text-gray-500 text-sm"
+                >Nenhuma conhecida</span
+              >
+            </div>
+          </div>
+
+          <div>
+            <h3
+              class="font-bold text-lg text-white mb-3 flex items-center gap-2"
+            >
+              <i data-lucide="shield-off" class="w-4 h-4 text-red-400"></i>
+              Fraquezas
+            </h3>
+            <div class="flex flex-wrap gap-2">
+              <span
+                *ngFor="let weak of personagem.weaknesses"
+                class="badge border-red-500/20 text-red-200 bg-red-500/10"
+              >
+                {{ weak }}
+              </span>
+              <span *ngIf="!personagem.weaknesses" class="text-gray-500 text-sm"
+                >Desconhecidas</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="md:col-span-3 pt-8 border-t border-white/10 animate-fade-in-up"
+        *ngIf="personagem.abilities"
+      >
+        <h3 class="font-bold text-lg text-white mb-4">
+          Habilidades Principais
+        </h3>
+        <ul class="space-y-2 text-gray-400 grid sm:grid-cols-2">
+          <li
+            *ngFor="let ab of personagem.abilities"
+            class="flex items-center gap-2"
+          >
+            <i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i>
+            {{ ab }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</div>

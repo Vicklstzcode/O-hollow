@@ -1,0 +1,242 @@
+/* ============================================
+   VARIÁVEIS LOCAIS
+   ============================================ */
+:host {
+    --text-light: #f8f9fa;
+    --color-primary-light: #e9d5ff;
+    --color-purple-text-light: #d8b4fe;
+    --color-purple-text-lightest: #ede9fe;
+    --color-purple-text-main: #a855f7;
+    --color-gradient-start: #3b0764;
+    --font-weight-bold: 700;
+    --font-weight-medium: 500;
+    --border-radius-lg: 0.75rem;
+    --transition-base: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* ============================================
+   1. ESTILOS GLOBAIS DA PÁGINA
+   ============================================ */
+
+.body-gradient {
+    /* Applied to the main container inside the component */
+    background-image: linear-gradient(to bottom right,
+            #020617,
+            #3b0764,
+            #111827);
+    min-height: 100vh;
+    background-attachment: fixed;
+    position: absolute;
+    /* Ensures it covers the screen behind content */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+}
+
+.page-container {
+    position: relative;
+    min-height: 100vh;
+}
+
+/* ============================================
+   2. SEÇÃO HERO DO UNIVERSO
+   ============================================ */
+
+.universe-hero {
+    position: relative;
+    height: 24rem;
+    /* 384px */
+    overflow: hidden;
+    color: var(--text-light);
+    background-color: #000;
+}
+
+.universe-hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+    opacity: 0.8;
+}
+
+.universe-hero-overlay-gradient {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(to bottom,
+            transparent,
+            rgba(2, 6, 23, 0.7),
+            #020617);
+}
+
+.universe-hero-overlay-color {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(to bottom right,
+            var(--color-gradient-start),
+            transparent);
+    opacity: 0.3;
+}
+
+.universe-hero-content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    padding-bottom: 3rem;
+    z-index: 10;
+}
+
+.btn-back {
+    color: var(--color-purple-text-light);
+    background-color: transparent;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+    transition: color var(--transition-base);
+}
+
+.btn-back:hover {
+    color: var(--color-primary-light);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.universe-title {
+    font-size: 3.75rem;
+    /* 60px */
+    font-weight: var(--font-weight-bold);
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.universe-description {
+    font-size: 1.25rem;
+    /* 20px */
+    color: var(--color-purple-text-light);
+    margin-bottom: 1rem;
+    max-width: 42rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.universe-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-purple-text-main);
+}
+
+.universe-meta i {
+    font-size: 1.25rem;
+}
+
+/* ============================================
+   3. CARDS DE PERSONAGEM
+   ============================================ */
+
+.character-card-link {
+    text-decoration: none;
+    display: block;
+    height: 100%;
+}
+
+.character-card {
+    border: 1px solid rgba(76, 29, 149, 0.2);
+    background-color: rgba(31, 41, 55, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    transition: border-color var(--transition-base), transform var(--transition-base);
+    height: 100%;
+}
+
+.character-card:hover {
+    border-color: rgba(76, 29, 149, 0.4);
+    transform: scale(1.03);
+}
+
+.character-card-image-wrapper {
+    position: relative;
+    height: 16rem;
+    /* 256px */
+    overflow: hidden;
+}
+
+.character-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+}
+
+.character-card:hover .character-card-img {
+    transform: scale(1.1);
+}
+
+.character-card-img-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(to top, #020617, rgba(2, 6, 23, 0.5), transparent);
+}
+
+.character-status-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background-color: rgba(34, 197, 94, 0.8);
+    /* Vivo */
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: var(--font-weight-medium);
+}
+
+.character-status-badge.deceased {
+    background-color: rgba(239, 68, 68, 0.8);
+}
+
+.character-card-body {
+    padding: 1.5rem;
+}
+
+.character-name {
+    font-size: 1.5rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-purple-text-lightest);
+    margin-bottom: 0.25rem;
+}
+
+.character-alias {
+    color: var(--color-purple-text-main);
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+}
+
+.character-bio {
+    color: var(--color-purple-text-light);
+    margin-bottom: 1rem;
+    max-height: 3.2em;
+    line-height: 1.6;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.character-powers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.power-badge {
+    border: 1px solid rgba(76, 29, 149, 0.3);
+    color: var(--color-purple-text-light);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+}

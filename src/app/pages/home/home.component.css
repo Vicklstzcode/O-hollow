@@ -1,0 +1,80 @@
+/* ===== FUNDO E PARTÍCULAS ===== */
+#particles-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    /* Importante para não bloquear cliques */
+}
+
+/* ===== EFEITOS VISUAIS ===== */
+
+/* Painel de Vidro (Reforço local caso precise ser diferente do global) */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+/* Efeito Neon ao passar o mouse (Cards) */
+.neon-hover {
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    /* Previne pulo de layout */
+}
+
+.neon-hover:hover {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+    border-color: rgba(139, 92, 246, 0.5);
+    transform: translateY(-5px);
+    /* Leve subida */
+}
+
+/* ===== INPUT DE BUSCA ===== */
+input:focus {
+    outline: none;
+    /* O Tailwind já trata a cor, aqui garantimos a remoção do padrão */
+}
+
+/* ===== TOAST NOTIFICATION (CSS) ===== */
+/* Estilos para quando implementarmos o feedback visual */
+#toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    background: rgba(20, 20, 20, 0.95);
+    border-left: 4px solid #8b5cf6;
+    color: white;
+    padding: 16px;
+    border-radius: 4px;
+    min-width: 250px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    animation: slideIn 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

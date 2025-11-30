@@ -1,9 +1,9 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Essencial
-import { RouterLink, Router } from '@angular/router'; // Para navegação
-import { CharacterService, Character } from '../../services/character.service'; // Importa nosso serviço
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink, Router } from '@angular/router';
+import { CharacterService, Character } from '../../services/character.service';
 
-// Declaração para usar ícones Lucide
+// Declaração para os ícones Lucide
 declare var lucide: any;
 
 @Component({
@@ -13,40 +13,28 @@ declare var lucide: any;
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent implements OnInit, AfterViewInit {
-  @ViewChild('particlesCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
-
-  // Dados
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
+  
+  // === DADOS ===
   todosPersonagens: Character[] = [];
   personagensFiltrados: Character[] = [];
   favoritos: number[] = [];
   
-  // Filtros
+  // === FILTROS ===
   filtros: string[] = ['Todos', 'Marvel', 'TVDU', 'DC', 'Magic', 'Tech'];
   filtroAtual: string = 'Todos';
 
-  // Carrossel
+  // === CARROSSEL ===
   carouselIndex: number = 0;
-  carouselItems: Character[] = []; // Vamos pegar os 3 primeiros para o carrossel
+  carouselItems: Character[] = [];
+  private intervaloCarrossel: any;
 
-  // Arena
+  // === ARENA DE BATALHA ===
   votosWanda: number = 0;
   votosStrange: number = 0;
   porcentagemWanda: number = 50;
   porcentagemStrange: number = 50;
-
-  // Stats
-  stats = [
-    { label: "Total de Personagens", value: 0, icon: "users", color: "#06B6D4" },
-    { label: "Universos Conectados", value: 0, icon: "globe", color: "#8B5CF6" },
-    { label: "Batalhas Simuladas", value: 0, icon: "swords", color: "#F59E0B" },
-    { label: "Nível de Ameaça", value: "Moderado", icon: "alert-triangle", color: "#DC2626" },
-  ];
-
-  // Toast
-  exibirToast: boolean = false;
-  mensagemToast: string = '';
-  tipoToast: 'success' | 'info' | 'error' = 'success';
+window: any;
 
   constructor(
     private characterService: CharacterService,
@@ -54,38 +42,35 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
-    // 1. Carregar dados do Serviço
+    // 1. Carrega dados do Serviço
     this.todosPersonagens = this.characterService.getCharacters();
     this.personagensFiltrados = [...this.todosPersonagens];
-    this.carouselItems = this.todosPersonagens.slice(0, 3);
     this.favoritos = this.characterService.getFavorites();
+    
+    // 2. Prepara o Carrossel (pega os 3 primeiros)
+    this.carouselItems = this.todosPersonagens.slice(0, 3);
+    this.iniciarCarrossel();
 
-    // 2. Calcular Stats e Votos
-    this.calcularStats();
+    // 3. Carrega Votos da Arena
     this.atualizarArena();
-
-    // 3. Iniciar Rotação do Carrossel
-    setInterval(() => {
-      this.proximoSlide();
-    }, 5000);
   }
 
   ngAfterViewInit() {
-    // Renderiza ícones
     this.atualizarIcones();
-    // Inicia partículas (placeholder, pois a lógica original do canvas era externa)
-    this.initParticles();
   }
 
-  // === FUNCIONALIDADES ===
+  ngOnDestroy() {
+    if (this.intervaloCarrossel) clearInterval(this.intervaloCarrossel);
+  }
 
   atualizarIcones() {
-    // Pequeno delay para garantir que o DOM renderizou
     setTimeout(() => {
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }, 100);
   }
 
+  // === LÓGICA DE FILTROS ===
+  
   mudarFiltro(filtro: string) {
     this.filtroAtual = filtro;
     
@@ -96,7 +81,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         c.universe === filtro || c.type === filtro
       );
     }
-    this.atualizarIcones();
+    this.atualizarIcones(); // Re-renderiza ícones nos novos cards
   }
 
   filtrarPorBusca(event: any) {
@@ -109,7 +94,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.atualizarIcones();
   }
 
-  // === CARROSSEL ===
+  // === LÓGICA DO CARROSSEL ===
+
+  iniciarCarrossel() {
+    this.intervaloCarrossel = setInterval(() => {
+      this.proximoSlide();
+    }, 5000);
+  }
+
   proximoSlide() {
     this.carouselIndex = (this.carouselIndex + 1) % this.carouselItems.length;
   }
@@ -118,11 +110,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.carouselIndex = (this.carouselIndex - 1 + this.carouselItems.length) % this.carouselItems.length;
   }
 
-  // === ARENA ===
+  // === LÓGICA DA ARENA ===
+
   votar(heroi: 'wanda' | 'strange') {
     this.characterService.vote(heroi);
     this.atualizarArena();
-    this.mostrarToast(`Voto computado para ${heroi === 'wanda' ? 'Feiticeira' : 'Dr. Estranho'}!`, 'success');
   }
 
   atualizarArena() {
@@ -137,16 +129,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // === FAVORITOS & INTERAÇÃO ===
-  toggleFavorito(id: number, event: Event) {
-    event.stopPropagation(); // Não abre o card
-    event.preventDefault(); // Não segue o link
+  // === AÇÕES ===
 
-    const adicionou = this.characterService.toggleFavorite(id);
-    this.favoritos = this.characterService.getFavorites(); // Recarrega lista
-    
-    if (adicionou) this.mostrarToast('Adicionado aos favoritos!', 'success');
-    else this.mostrarToast('Removido dos favoritos.', 'info');
+  toggleFavorito(id: number, event: Event) {
+    event.stopPropagation();
+    event.preventDefault();
+    this.characterService.toggleFavorite(id);
+    this.favoritos = this.characterService.getFavorites();
   }
 
   ehFavorito(id: number): boolean {
@@ -155,42 +144,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   irParaAleatorio() {
     if (this.todosPersonagens.length > 0) {
-      const randomIndex = Math.floor(Math.random() * this.todosPersonagens.length);
-      const id = this.todosPersonagens[randomIndex].id;
-      this.router.navigate(['/detalhes', id]);
+      const randomId = this.todosPersonagens[Math.floor(Math.random() * this.todosPersonagens.length)].id;
+      this.router.navigate(['/detalhes', randomId]);
     }
-  }
-
-  // === UTILITÁRIOS ===
-  mostrarToast(msg: string, tipo: 'success' | 'info' | 'error') {
-    this.mensagemToast = msg;
-    this.tipoToast = tipo;
-    this.exibirToast = true;
-    this.atualizarIcones(); // Para o ícone do toast
-    
-    setTimeout(() => {
-      this.exibirToast = false;
-    }, 3000);
-  }
-
-  calcularStats() {
-    const uniqueUniverses = new Set(this.todosPersonagens.map(c => c.universe)).size;
-    const maxPower = Math.max(...this.todosPersonagens.map(c => c.powerLevel));
-    
-    let ameaca = "Moderado";
-    if (maxPower >= 98) ameaca = "Cósmico";
-    else if (maxPower >= 95) ameaca = "Omega";
-
-    this.stats[0].value = this.todosPersonagens.length;
-    this.stats[1].value = uniqueUniverses;
-    this.stats[2].value = this.votosWanda + this.votosStrange;
-    this.stats[3].value = ameaca as any;
-  }
-
-  initParticles() {
-    // Aqui você pode adaptar o código do Canvas se ele for curto, 
-    // ou deixá-lo vazio por enquanto para focar na lógica principal.
-    const canvas = this.canvasRef.nativeElement;
-    // ... lógica do canvas ...
   }
 }

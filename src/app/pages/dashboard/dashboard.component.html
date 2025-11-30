@@ -1,1 +1,216 @@
-<p>dashboard works!</p>
+<canvas id="particles-canvas"></canvas>
+
+<div class="min-h-screen relative">
+  <nav
+    id="navbar"
+    class="fixed top-0 left-0 right-0 z-50 bg-black/70 backdrop-blur-lg border-b border-white/5"
+  >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a routerLink="/home" class="flex items-center gap-2">
+          <div
+            class="w-10 h-10 bg-gradient-to-br from-purple-600 to-cyan-500 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.5)]"
+          >
+            <i data-lucide="zap" class="w-6 h-6 text-white"></i>
+          </div>
+          <div>
+            <h1
+              class="text-sm tracking-wider font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400"
+            >
+              S.M.M.
+            </h1>
+            <p class="text-[10px] text-cyan-400 tracking-[0.2em]">SYSTEM 2.0</p>
+          </div>
+        </a>
+
+        <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+          <a
+            routerLink="/home"
+            class="text-gray-400 hover:text-purple-400 transition-colors"
+            >Início</a
+          >
+          <a
+            routerLink="/dashboard"
+            class="text-white hover:text-purple-400 transition-colors font-bold"
+            >Dashboard</a
+          >
+          <a
+            routerLink="/home"
+            class="text-gray-400 hover:text-purple-400 transition-colors"
+            >Heróis</a
+          >
+          <a
+            routerLink="/favoritos"
+            class="text-gray-400 hover:text-purple-400 transition-colors"
+            >Favoritos</a
+          >
+        </div>
+
+        <div class="flex items-center gap-4">
+          <a
+            routerLink="/home"
+            class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full text-sm transition-all border border-white/5 cursor-pointer"
+            >Voltar</a
+          >
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-12">
+    <div class="flex items-center gap-4 mb-10 animate-fade-in-up">
+      <i data-lucide="layout-dashboard" class="w-10 h-10 text-purple-500"></i>
+      <h1
+        class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-500 to-cyan-500 bg-clip-text text-transparent"
+      >
+        Dashboard de Ameaças
+      </h1>
+    </div>
+
+    <div
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 animate-fade-in-up"
+    >
+      <div
+        class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform"
+      >
+        <div class="flex justify-between items-start">
+          <p class="text-sm font-medium text-gray-400">Total de Entidades</p>
+          <i data-lucide="database" class="w-5 h-5 text-purple-400"></i>
+        </div>
+        <p class="text-4xl font-bold text-white mt-2">{{ totalEntidades }}</p>
+        <p class="text-xs text-gray-500 mt-1">Entidades rastreadas</p>
+      </div>
+
+      <div
+        class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform"
+      >
+        <div class="flex justify-between items-start">
+          <p class="text-sm font-medium text-gray-400">Ameaças Ativas</p>
+          <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400"></i>
+        </div>
+        <p class="text-4xl font-bold text-white mt-2">{{ ameacasAtivas }}</p>
+        <p class="text-xs text-red-400 mt-1 flex items-center gap-1">
+          <i data-lucide="activity" class="w-3 h-3"></i> Requer atenção
+        </p>
+      </div>
+
+      <div
+        class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform"
+      >
+        <div class="flex justify-between items-start">
+          <p class="text-sm font-medium text-gray-400">Novos Registros</p>
+          <i data-lucide="trending-up" class="w-5 h-5 text-green-400"></i>
+        </div>
+        <p class="text-4xl font-bold text-white mt-2">+{{ novosRegistros }}</p>
+        <p class="text-xs text-green-400 mt-1">Hoje</p>
+      </div>
+
+      <div
+        class="glass-panel p-6 rounded-xl hover:-translate-y-1 transition-transform"
+      >
+        <div class="flex justify-between items-start">
+          <p class="text-sm font-medium text-gray-400">Universos Monitorados</p>
+          <i data-lucide="globe" class="w-5 h-5 text-cyan-400"></i>
+        </div>
+        <p class="text-4xl font-bold text-white mt-2">
+          {{ universosMonitorados }}
+        </p>
+        <p class="text-xs text-cyan-400 mt-1 truncate" [title]="listaUniversos">
+          {{ listaUniversos }}
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10 animate-fade-in-up"
+      style="animation-delay: 200ms"
+    >
+      <div class="glass-panel p-6 rounded-xl lg:col-span-2">
+        <h3 class="text-lg font-bold text-white mb-4">
+          Nível de Energia por Universo (Média)
+        </h3>
+        <div class="h-80">
+          <canvas id="energyChart"></canvas>
+        </div>
+      </div>
+
+      <div class="glass-panel p-6 rounded-xl">
+        <h3 class="text-lg font-bold text-white mb-4">Distribuição por Tipo</h3>
+        <div class="h-80">
+          <canvas id="speciesChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="glass-panel rounded-xl overflow-hidden animate-fade-in-up"
+      style="animation-delay: 400ms"
+    >
+      <h3 class="text-lg font-bold text-white p-6 border-b border-white/5">
+        Últimas Atividades Detectadas (Top 5 Poder)
+      </h3>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-left text-gray-400">
+          <thead
+            class="text-xs text-gray-400 uppercase bg-white/5 border-b border-white/10"
+          >
+            <tr>
+              <th scope="col" class="px-6 py-3">Nome</th>
+              <th scope="col" class="px-6 py-3">Universo</th>
+              <th scope="col" class="px-6 py-3">Status</th>
+              <th scope="col" class="px-6 py-3">Nível de Perigo</th>
+              <th scope="col" class="px-6 py-3 text-right">Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let item of atividadesRecentes"
+              class="border-b border-white/5 hover:bg-white/5 transition-colors"
+            >
+              <td class="px-6 py-4 font-medium text-white">{{ item.name }}</td>
+              <td class="px-6 py-4">
+                <span
+                  class="px-2 py-1 rounded-md bg-white/5 border border-white/10 text-xs"
+                >
+                  {{ item.universe }}
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <span
+                  class="px-2 py-1 rounded text-xs font-bold"
+                  [class]="item.statusClass"
+                  >{{ item.status }}</span
+                >
+              </td>
+              <td class="px-6 py-4">
+                <div
+                  class="w-full bg-white/10 rounded-full h-1.5 max-w-[100px] mb-1"
+                >
+                  <div
+                    class="h-1.5 rounded-full"
+                    [class]="item.dangerBarClass"
+                    [style.width.%]="item.powerLevel"
+                  ></div>
+                </div>
+                <span
+                  class="px-2 py-1 text-xs font-medium rounded-full"
+                  [class]="item.dangerClass"
+                  >{{ item.dangerText }}</span
+                >
+              </td>
+              <td class="px-6 py-4 text-right">
+                <a
+                  [routerLink]="['/detalhes', item.id]"
+                  class="text-purple-400 hover:text-white font-medium hover:underline cursor-pointer"
+                >
+                  Ver Dossiê
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
