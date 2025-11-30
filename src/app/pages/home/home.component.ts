@@ -2,9 +2,31 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { CharacterService, Character } from '../../services/character.service';
-
+import { AuthService } from '../../services/auth.service';
 // Declaração para os ícones Lucide
 declare var lucide: any;
+
+@Component({ template: '' }) // Adicione um decorador @Component mínimo
+export class HomeComponent_Temp implements OnInit {
+  
+  constructor(
+    private characterService: CharacterService,
+    private router: Router,
+    private authService: AuthService // <--- Adicione
+  ) {}
+  ngOnInit(): void {
+    throw new Error('Method not implemented.');
+  }
+
+  // ... resto do código ...
+
+  // Adicione esta função
+  sair() {
+    this.authService.logout();
+  }
+}
+
+
 
 @Component({
   selector: 'app-home',
@@ -14,6 +36,9 @@ declare var lucide: any;
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
+sair() {
+throw new Error('Method not implemented.');
+}
   
   // === DADOS ===
   todosPersonagens: Character[] = [];

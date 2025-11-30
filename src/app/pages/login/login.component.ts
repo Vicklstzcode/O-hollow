@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service'; // Importamos o serviço de autenticação
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   // === CONTROLE DE INTERFACE ===
   exibirModal: boolean = false;
   mostrarSenha: boolean = false;
-  lgpdAceito: boolean = false; // Controla o checkbox e habilita o botão
+  lgpdAceito: boolean = false;
 
   // === ANIMAÇÃO DO LOGO ===
   simbolos: string[] = ["ᱬ", "۞", "⚜️", "ᛝ", "⚡", "💀", "🩸", "🌩️"];
@@ -35,7 +36,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   classeAnimacaoCarrossel: string = 'slide-in';
   private intervaloCarrossel: any;
 
-  constructor(private router: Router) {}
+  // Injetamos o AuthService e o Router
+  constructor(
+    private authService: AuthService, 
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.iniciarRotacaoLogo();
@@ -43,7 +48,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Limpa a memória ao sair da tela
     if (this.intervaloLogo) clearInterval(this.intervaloLogo);
     if (this.intervaloCarrossel) clearInterval(this.intervaloCarrossel);
   }
@@ -51,15 +55,17 @@ export class LoginComponent implements OnInit, OnDestroy {
   // === AÇÕES ===
 
   fazerLogin() {
-    console.log('Login solicitado...');
-    // Redireciona para a Home
-    this.router.navigate(['/home']);
+    console.log('Autenticando...');
+    // Chama o serviço para logar o usuário
+    // (Aqui você pode passar o usuário digitado no form, se quiser)
+    this.authService.login('UsuarioIniciado');
   }
 
   fazerCadastro() {
     console.log('Cadastro solicitado...');
-    // Fecha o modal após "cadastrar"
     this.fecharModalCadastro();
+    // Opcional: Já logar o usuário após cadastro
+    // this.authService.login('NovoUsuario');
   }
 
   abrirModalCadastro() {
@@ -79,34 +85,23 @@ export class LoginComponent implements OnInit, OnDestroy {
   iniciarRotacaoLogo() {
     let index = 0;
     this.intervaloLogo = setInterval(() => {
-      // 1. Esmaece
       this.opacidadeLogo = 0;
-
-      // 2. Troca o símbolo (aguarda a transição CSS de 500ms)
       setTimeout(() => {
         index = (index + 1) % this.simbolos.length;
         this.simboloAtual = this.simbolos[index];
-        // 3. Reaparece
         this.opacidadeLogo = 1;
       }, 500); 
-
     }, 3000);
   }
 
   iniciarCarrossel() {
     this.intervaloCarrossel = setInterval(() => {
-      // 1. Anima saída
       this.classeAnimacaoCarrossel = 'slide-out';
-
       setTimeout(() => {
-        // 2. Troca o conteúdo
         this.featureAtualIndex = (this.featureAtualIndex + 1) % this.features.length;
         this.featureAtual = this.features[this.featureAtualIndex];
-        
-        // 3. Anima entrada
         this.classeAnimacaoCarrossel = 'slide-in';
-      }, 500); // Tempo da animação de saída
-
+      }, 500); 
     }, 4000);
   }
 }
