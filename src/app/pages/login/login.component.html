@@ -5,33 +5,26 @@
       <div class="presentation-content">
         <div class="logo-container">
           <div class="mystic-circle"></div>
-          <!-- O Angular controla a opacidade e o texto aqui -->
-          <div class="dynamic-symbol-container" [style.opacity]="opacidadeLogo">
-            {{ simboloAtual }}
-          </div>
+          <div class="dynamic-symbol">{{ simboloAtual }}</div>
         </div>
 
         <h1 class="site-title">LENDARIUM</h1>
-        <div class="site-summary">
-          <p class="site-description">
-            O arquivo definitivo sobre as entidades mais poderosas dos
-            multiversos. Aqui, você não apenas lê sobre lendas — você as
-            analisa, compara e decide seu destino.
-          </p>
+        <p class="site-description">
+          O arquivo definitivo sobre as entidades mais poderosas dos
+          multiversos. Aqui, você não apenas lê sobre lendas — você as
+          analisa, compara e decide seu destino.
+        </p>
 
-          <!-- Carrossel Angularizado -->
-          <div class="features-carousel">
-            <div class="feature-item" [ngClass]="classeAnimacaoCarrossel">
-              <span class="feature-icon">{{ featureAtual.icon }}</span>
-              <!-- [innerHTML] permite renderizar as tags <strong> -->
-              <span [innerHTML]="featureAtual.text"></span>
-            </div>
+        <div class="features-carousel">
+          <div class="feature-item">
+            <span class="feature-icon">{{ featureAtual.icon }}</span>
+            <span [innerHTML]="featureAtual.text"></span>
           </div>
-
-          <p class="site-call-to-action">
-            Adentre o círculo. O conhecimento arcano aguarda.
-          </p>
         </div>
+
+        <p class="site-call-to-action">
+          Adentre o círculo. O conhecimento arcano aguarda.
+        </p>
       </div>
     </div>
 
@@ -43,33 +36,32 @@
           <p class="form-subtitle">Adentre o círculo sagrado</p>
         </div>
 
-        <!-- (ngSubmit) intercepta o envio e chama fazerLogin() -->
         <form class="login-form" (ngSubmit)="fazerLogin()">
-          <div>
+          <div class="form-group">
             <label for="username" class="form-label">Usuário</label>
             <input
               type="text"
               id="username"
               name="username"
               class="form-input"
+              [(ngModel)]="loginData.username"
               required
               placeholder="Digite seu usuário..."
             />
           </div>
 
-          <div>
+          <div class="form-group">
             <label for="password" class="form-label">Senha</label>
             <div class="password-input-wrapper">
-              <!-- [type] muda dinamicamente entre text e password -->
               <input
                 [type]="mostrarSenha ? 'text' : 'password'"
                 id="password"
                 name="password"
                 class="form-input password-input"
+                [(ngModel)]="loginData.password"
                 required
                 placeholder="Digite sua senha..."
               />
-
               <button
                 type="button"
                 class="toggle-password"
@@ -96,6 +88,7 @@
             <button
               type="button"
               class="social-button google"
+              (click)="loginGoogle()"
               aria-label="Entrar com Google"
             >
               G
@@ -103,6 +96,7 @@
             <button
               type="button"
               class="social-button discord"
+              (click)="loginDiscord()"
               aria-label="Entrar com Discord"
             >
               D
@@ -118,7 +112,7 @@
               class="register-modal-trigger"
               (click)="abrirModalCadastro()"
             >
-              Crie seu Coven ᚨᚱᛚᚹ ᛟᛉᚢᚾ
+              Crie seu Coven
             </button>
           </p>
         </div>
@@ -128,9 +122,8 @@
 </div>
 
 <!-- ===== MODAL DE CADASTRO ===== -->
-<!-- *ngIf controla se o modal existe no DOM ou não -->
-<div class="modal-overlay" *ngIf="exibirModal">
-  <div class="modal-content">
+<div class="modal-overlay" *ngIf="exibirModal" (click)="fecharModalCadastro()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
     <button
       class="modal-close-btn"
       (click)="fecharModalCadastro()"
@@ -145,32 +138,40 @@
     </div>
 
     <form class="login-form" (ngSubmit)="fazerCadastro()">
-      <div>
+      <div class="form-group">
         <label for="regUsername" class="form-label">Usuário</label>
         <input
           type="text"
           id="regUsername"
+          name="regUsername"
           class="form-input"
+          [(ngModel)]="cadastroData.username"
           required
           placeholder="Escolha seu nome arcano..."
         />
       </div>
-      <div>
+
+      <div class="form-group">
         <label for="regEmail" class="form-label">Email</label>
         <input
           type="email"
           id="regEmail"
+          name="regEmail"
           class="form-input"
+          [(ngModel)]="cadastroData.email"
           required
           placeholder="Seu portal de comunicação..."
         />
       </div>
-      <div>
+
+      <div class="form-group">
         <label for="regPassword" class="form-label">Senha</label>
         <input
           type="password"
           id="regPassword"
+          name="regPassword"
           class="form-input"
+          [(ngModel)]="cadastroData.password"
           required
           placeholder="Crie uma chave secreta..."
         />
@@ -189,24 +190,23 @@
               href="http://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"
               target="_blank"
               class="lgpd-link"
-              >Lei Geral de Proteção de Dados (LGPD)</a
-            >.
+            >
+              Lei Geral de Proteção de Dados (LGPD)
+            </a>.
           </p>
         </div>
         <div class="lgpd-consent">
-          <!-- [(ngModel)] liga o checkbox à variável lgpdAceito -->
           <input
             type="checkbox"
             id="lgpdAccept"
-            required
+            name="lgpdAccept"
             [(ngModel)]="lgpdAceito"
-            name="lgpdTermos"
+            required
           />
           <label for="lgpdAccept">Eu li e aceito os termos e condições.</label>
         </div>
       </div>
 
-      <!-- [disabled] desativa o botão se lgpdAceito for false -->
       <button type="submit" class="submit-button" [disabled]="!lgpdAceito">
         Finalizar Iniciação
       </button>

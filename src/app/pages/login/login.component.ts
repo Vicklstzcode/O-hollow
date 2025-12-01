@@ -12,6 +12,13 @@ import { AuthService } from '../../services/auth.service'; // Importamos o servi
   styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit, OnDestroy {
+loginData: any = {};
+loginGoogle() {
+throw new Error('Method not implemented.');
+}
+loginDiscord() {
+throw new Error('Method not implemented.');
+}
   
   // === CONTROLE DE INTERFACE ===
   exibirModal: boolean = false;
@@ -35,6 +42,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   featureAtual = this.features[0];
   classeAnimacaoCarrossel: string = 'slide-in';
   private intervaloCarrossel: number | undefined;
+cadastroData: any = {};
 
   // Injetamos o AuthService e o Router
   constructor(
@@ -84,7 +92,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   iniciarRotacaoLogo() {
     let index = 0;
-    this.intervaloLogo = setInterval(() => {
+    this.intervaloLogo = window.setInterval(() => {
       this.opacidadeLogo = 0;
       setTimeout(() => {
         index = (index + 1) % this.simbolos.length;
@@ -95,7 +103,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   iniciarCarrossel() {
-    this.intervaloCarrossel = setInterval(() => {
+    this.intervaloCarrossel = window.setInterval(() => {
       this.classeAnimacaoCarrossel = 'slide-out';
       setTimeout(() => {
         this.featureAtualIndex = (this.featureAtualIndex + 1) % this.features.length;
