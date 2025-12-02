@@ -23,6 +23,9 @@ export interface Character {
   providedIn: 'root'
 })
 export class CharacterService {
+  getCharactersObservable() {
+    throw new Error('Method not implemented.');
+  }
 
   // Carrega os dados iniciais
   // Nota: Em uma app real, isso viria de um http.get()
