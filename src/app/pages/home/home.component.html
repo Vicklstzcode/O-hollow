@@ -107,10 +107,7 @@
     <!-- Cabeçalho do Menu -->
     <div class="flex justify-between items-center mb-8">
       <h2 class="text-lg font-bold text-white">Menu</h2>
-      <button
-        (click)="toggleMobileMenu()"
-        class="text-gray-400 hover:text-white"
-      >
+      <button (click)="toggleMobileMenu()" class="text-gray-400 hover:text-white">
         <i data-lucide="x" class="w-6 h-6"></i>
       </button>
     </div>
@@ -148,7 +145,10 @@
 
     <!-- Links de Navegação -->
     <nav class="flex flex-col gap-2">
-      <a routerLink="/" class="mobile-nav-link" (click)="toggleMobileMenu()"
+      <a
+        routerLink="/"
+        class="mobile-nav-link"
+        (click)="toggleMobileMenu()"
         >Início</a
       >
       <a
@@ -166,9 +166,7 @@
     </nav>
   </div>
 
-  <main
-    class="flex-grow pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-12 w-full"
-  >
+  <main class="flex-grow pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-12 w-full">
     <div
       class="grid lg:grid-cols-2 gap-12 items-center mb-20 animate-fade-in-up"
     >
@@ -514,7 +512,9 @@
     <div
       class="max-w-7xl mx-auto text-center text-gray-400 flex flex-col md:flex-row justify-between items-center gap-4"
     >
-      <p class="text-sm">&copy; 2024 Mysticos. Todos os direitos reservados.</p>
+      <p class="text-sm">
+        &copy; 2024 Mysticos. Todos os direitos reservados.
+      </p>
       <div class="flex items-center gap-6 text-sm">
         <a href="#" class="hover:text-purple-400 transition-colors">Sobre</a>
         <a href="#" class="hover:text-purple-400 transition-colors"
