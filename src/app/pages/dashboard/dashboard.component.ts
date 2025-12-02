@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CharacterService, Character } from '../../services/character.service';
@@ -32,7 +32,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   // Dados para a Tabela
   atividadesRecentes: any[] = [];
 
-  constructor(private characterService: CharacterService) {}
+  constructor(
+    private characterService: CharacterService,
+    private location: Location
+  ) {}
 
   ngOnInit() {
     this.charactersSubscription = this.characterService.getCharactersObservable().subscribe(characters => {
@@ -49,17 +52,16 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    // Inicia ícones e gráficos DEPOIS que o HTML carrega
-    setTimeout(() => {
-      if (typeof lucide !== 'undefined') lucide.createIcons();
-    }, 100);
+    // O método atualizarDashboard() já cuida da inicialização dos ícones e gráficos.
   }
 
-  private atualizarDashboard(): void {
+  private atualizarDashboard() {
     this.calcularMetricas();
     this.gerarTabela();
     // Garante que os gráficos só renderizem depois da view
-    setTimeout(() => this.renderizarGraficos(), 0);
+    setTimeout(() => this.renderizarGraficos(), 0); // Adicionado para renderizar os gráficos
+    // Atualiza os ícones, incluindo os do novo ranking
+    setTimeout(() => lucide.createIcons(), 100);
   }
 
   private calcularMetricas() {
@@ -170,5 +172,9 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
     }
+  }
+
+  voltarPagina() {
+    this.location.back();
   }
 }

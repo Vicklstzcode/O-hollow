@@ -1,6 +1,6 @@
-<canvas id="particles-canvas"></canvas>
-
 <div class="min-h-screen relative">
+  <!-- Canvas original restaurado -->
+  <canvas id="particles-canvas"></canvas>
   <!-- Navbar -->
   <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 glass-nav">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -28,7 +28,7 @@
         </div>
 
         <div class="flex items-center gap-4">
-          <button class="btn-back" routerLink="/home">
+          <button class="btn-back" (click)="voltarPagina()">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
             Voltar
           </button>

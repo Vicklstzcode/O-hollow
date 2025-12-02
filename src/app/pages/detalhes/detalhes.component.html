@@ -1,5 +1,3 @@
-<canvas id="particles-canvas"></canvas>
-
 <div
   id="toast-container"
   class="fixed top-4 right-4 z-[60]"
@@ -19,6 +17,9 @@
 </div>
 
 <div class="min-h-screen relative">
+  <!-- Canvas original restaurado -->
+  <canvas id="particles-canvas"></canvas>
+
   <nav
     id="navbar"
     class="fixed top-0 left-0 right-0 z-50 bg-black/70 backdrop-blur-lg border-b border-white/5"
@@ -233,6 +234,71 @@
             {{ ab }}
           </li>
         </ul>
+      </div>
+    </div>
+
+    <!-- ======================= SEÇÃO DE COMENTÁRIOS ======================= -->
+    <div *ngIf="personagem" class="max-w-5xl mx-auto mt-16 animate-fade-in-up">
+      <h2 class="text-2xl font-bold flex items-center gap-2 text-white mb-6">
+        <i data-lucide="messages-square" class="text-cyan-400"></i>
+        Discussão da Comunidade
+      </h2>
+
+      <!-- Formulário para novo comentário (apenas para usuários logados) -->
+      <div *ngIf="usuarioLogado" class="mb-8">
+        <textarea
+          [(ngModel)]="novoComentario"
+          rows="4"
+          class="block w-full p-4 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all"
+          placeholder="Escreva seu comentário..."
+        ></textarea>
+        <button
+          (click)="adicionarComentario()"
+          [disabled]="!novoComentario.trim()"
+          class="mt-4 px-6 py-2 bg-purple-600 hover:bg-purple-700 rounded-full text-sm font-bold transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed"
+        >
+          Comentar
+        </button>
+      </div>
+
+      <!-- Mensagem para usuários não logados -->
+      <div
+        *ngIf="!usuarioLogado"
+        class="mb-8 glass-panel p-6 rounded-lg text-center"
+      >
+        <p class="text-gray-400">
+          Você precisa estar logado para comentar.
+          <a
+            routerLink="/login"
+            class="text-purple-400 hover:underline font-bold"
+            >Faça o login</a
+          >
+          ou crie sua conta.
+        </p>
+      </div>
+
+      <!-- Lista de Comentários -->
+      <div class="space-y-6">
+        <p *ngIf="comentarios.length === 0" class="text-gray-500">
+          Ainda não há comentários. Seja o primeiro a comentar!
+        </p>
+
+        <div *ngFor="let comentario of comentarios" class="flex gap-4">
+          <div
+            class="w-10 h-10 rounded-full bg-white/10 flex-shrink-0 flex items-center justify-center"
+          >
+            <i data-lucide="user" class="w-5 h-5 text-gray-400"></i>
+          </div>
+          <div class="w-full">
+            <div class="flex items-center gap-3 mb-1">
+              <span class="font-bold text-white">{{ comentario.user }}</span>
+              <span class="text-xs text-gray-500">{{
+                comentario.date | date : "dd/MM/yyyy HH:mm"
+              }}</span>
+            </div>
+            <p class="text-gray-300 leading-relaxed">{{ comentario.text }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </main>

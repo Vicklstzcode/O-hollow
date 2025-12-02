@@ -24,6 +24,12 @@ export interface Character {
   providedIn: 'root'
 })
 export class CharacterService {
+  addComment(id: number, comentario: { user: string; date: string; text: string; }) {
+    throw new Error('Method not implemented.');
+  }
+  getComments(id: number): any[] {
+    throw new Error('Method not implemented.');
+  }
   // Chaves para o localStorage
   private readonly CHARACTERS_KEY = 'mysticos_characters';
 
