@@ -290,13 +290,60 @@
             <i data-lucide="user" class="w-5 h-5 text-gray-400"></i>
           </div>
           <div class="w-full">
-            <div class="flex items-center gap-3 mb-1">
-              <span class="font-bold text-white">{{ comentario.user }}</span>
-              <span class="text-xs text-gray-500">{{
-                comentario.date | date : "dd/MM/yyyy HH:mm"
-              }}</span>
+            <div class="flex justify-between items-center mb-1">
+              <div class="flex items-center gap-3">
+                <span class="font-bold text-white">{{ comentario.user }}</span>
+                <span class="text-xs text-gray-500">{{
+                  comentario.date | date : "dd/MM/yyyy HH:mm"
+                }}</span>
+              </div>
+              <!-- Botões de Ação (só aparecem para o dono do comentário) -->
+              <div
+                *ngIf="comentario.user === 'Usuário Logado'"
+                class="flex gap-2"
+              >
+                <button
+                  (click)="iniciarEdicao(comentario)"
+                  class="text-gray-500 hover:text-cyan-400 transition-colors"
+                >
+                  <i data-lucide="pencil" class="w-3 h-3"></i>
+                </button>
+                <button
+                  (click)="excluirComentario(comentario.id)"
+                  class="text-gray-500 hover:text-red-400 transition-colors"
+                >
+                  <i data-lucide="trash-2" class="w-3 h-3"></i>
+                </button>
+              </div>
             </div>
-            <p class="text-gray-300 leading-relaxed">{{ comentario.text }}</p>
+
+            <!-- Modo de Edição -->
+            <div *ngIf="editandoComentarioId === comentario.id; else viewMode">
+              <textarea
+                [(ngModel)]="textoEditado"
+                rows="3"
+                class="mt-2 block w-full p-2 border border-white/10 rounded-lg bg-white/5 text-white focus:outline-none focus:ring-1 focus:ring-purple-500"
+              ></textarea>
+              <div class="flex gap-2 mt-2">
+                <button
+                  (click)="salvarEdicao()"
+                  class="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded-md text-xs font-bold"
+                >
+                  Salvar
+                </button>
+                <button
+                  (click)="cancelarEdicao()"
+                  class="px-3 py-1 bg-white/10 hover:bg-white/20 text-gray-300 rounded-md text-xs"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+
+            <!-- Modo de Visualização -->
+            <ng-template #viewMode>
+              <p class="text-gray-300 leading-relaxed">{{ comentario.text }}</p>
+            </ng-template>
           </div>
         </div>
       </div>

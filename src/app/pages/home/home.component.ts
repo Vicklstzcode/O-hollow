@@ -53,6 +53,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // === FILTROS ===
   filtros: string[] = ['Todos', 'Marvel', 'TVDU', 'DC', 'Magic', 'Tech'];
   filtroAtual: string = 'Todos';
+  termoBusca: string = '';
+  filtrandoPersonagens: boolean = false;
 
   // === CARROSSEL ===
   carouselIndex: number = 0;
@@ -139,25 +141,41 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   
   mudarFiltro(filtro: string) {
     this.filtroAtual = filtro;
-    
-    if (filtro === 'Todos') {
-      this.personagensFiltrados = this.todosPersonagens;
-    } else {
-      this.personagensFiltrados = this.todosPersonagens.filter(c => 
-        c.universe === filtro || c.type === filtro
-      );
-    }
-    this.atualizarIcones(); // Re-renderiza ícones nos novos cards
+    this.aplicarFiltros();
   }
 
   filtrarPorBusca(event: any) {
-    const termo = event.target.value.toLowerCase();
-    this.personagensFiltrados = this.todosPersonagens.filter(c => 
-      c.name.toLowerCase().includes(termo) || 
-      c.alias.toLowerCase().includes(termo) ||
-      c.universe.toLowerCase().includes(termo)
-    );
-    this.atualizarIcones();
+    this.termoBusca = event.target.value.toLowerCase();
+    this.aplicarFiltros();
+  }
+
+  aplicarFiltros() {
+    this.filtrandoPersonagens = true;
+
+    // Usamos um pequeno setTimeout para garantir que o loader seja exibido na tela
+    // antes que a filtragem (que pode ser muito rápida) termine.
+    setTimeout(() => {
+      let personagens = this.todosPersonagens;
+
+      // 1. Aplica o filtro de categoria (Universo/Tipo)
+      if (this.filtroAtual !== 'Todos') {
+        personagens = personagens.filter(c => 
+          c.universe === this.filtroAtual || c.type === this.filtroAtual
+        );
+      }
+
+      // 2. Aplica o filtro de busca sobre o resultado anterior
+      if (this.termoBusca) {
+        personagens = personagens.filter(c => 
+          c.name.toLowerCase().includes(this.termoBusca) || 
+          c.alias.toLowerCase().includes(this.termoBusca)
+        );
+      }
+
+      this.personagensFiltrados = personagens;
+      this.filtrandoPersonagens = false; // Esconde o loader
+      this.atualizarIcones(); // Atualiza os ícones dos novos cards
+    }, 250); // Um delay de 250ms é suficiente para a percepção visual.
   }
 
   // === LÓGICA DO CARROSSEL ===

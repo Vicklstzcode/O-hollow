@@ -24,14 +24,9 @@ export interface Character {
   providedIn: 'root'
 })
 export class CharacterService {
-  addComment(id: number, comentario: { user: string; date: string; text: string; }) {
-    throw new Error('Method not implemented.');
-  }
-  getComments(id: number): any[] {
-    throw new Error('Method not implemented.');
-  }
   // Chaves para o localStorage
   private readonly CHARACTERS_KEY = 'mysticos_characters';
+  private readonly COMMENTS_KEY = 'mysticos_comments';
 
   // BehaviorSubject para manter e emitir a lista de personagens
   private charactersSubject: BehaviorSubject<Character[]>;
@@ -117,6 +112,52 @@ export class CharacterService {
   private updateCharacters(characters: Character[]) {
     localStorage.setItem(this.CHARACTERS_KEY, JSON.stringify(characters));
     this.charactersSubject.next(characters);
+  }
+
+  // === COMENTÁRIOS ===
+
+  getComments(characterId: number): any[] {
+    const allComments = JSON.parse(localStorage.getItem(this.COMMENTS_KEY) || '{}');
+    const comments = allComments[characterId] || [];
+    // Ordena para mostrar os mais recentes primeiro
+    return comments.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  }
+
+  addComment(characterId: number, comment: any) {
+    const allComments = JSON.parse(localStorage.getItem(this.COMMENTS_KEY) || '{}');
+    
+    if (!allComments[characterId]) {
+      allComments[characterId] = [];
+    }
+    
+    // Adiciona um ID único ao comentário para permitir edição/exclusão
+    const newComment = {
+      id: Date.now(),
+      ...comment
+    };
+
+    // Adiciona no início da lista para aparecer primeiro
+    allComments[characterId].unshift(newComment); 
+    localStorage.setItem(this.COMMENTS_KEY, JSON.stringify(allComments));
+  }
+
+  updateComment(characterId: number, commentId: number, newText: string) {
+    const allComments = JSON.parse(localStorage.getItem(this.COMMENTS_KEY) || '{}');
+    if (allComments[characterId]) {
+      const commentIndex = allComments[characterId].findIndex((c: any) => c.id === commentId);
+      if (commentIndex > -1) {
+        allComments[characterId][commentIndex].text = newText;
+        localStorage.setItem(this.COMMENTS_KEY, JSON.stringify(allComments));
+      }
+    }
+  }
+
+  deleteComment(characterId: number, commentId: number) {
+    const allComments = JSON.parse(localStorage.getItem(this.COMMENTS_KEY) || '{}');
+    if (allComments[characterId]) {
+      allComments[characterId] = allComments[characterId].filter((c: any) => c.id !== commentId);
+      localStorage.setItem(this.COMMENTS_KEY, JSON.stringify(allComments));
+    }
   }
 
   // === FAVORITOS E VOTAÇÃO (Mantidos) ===

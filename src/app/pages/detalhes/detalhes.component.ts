@@ -31,6 +31,8 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
   // === COMENTÁRIOS ===
   comentarios: any[] = [];
   novoComentario: string = '';
+  editandoComentarioId: number | null = null;
+  textoEditado: string = '';
 
   // === AUTENTICAÇÃO ===
   get usuarioLogado(): boolean {
@@ -54,7 +56,7 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
         if (this.personagem) {
           this.encontrado = true; // Garante que a flag de erro seja resetada
           // Se achou, verifica se já é favorito
-          this.verificarFavorito();
+          this.ehFavorito = this.characterService.getFavorites().includes(this.personagem.id);
           // E carrega os comentários
           this.carregarComentarios();
           // Atualiza os ícones da página
@@ -79,13 +81,6 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
 
   voltarPagina() {
     this.location.back();
-  }
-
-  verificarFavorito() {
-    if (this.personagem) {
-      const favs = this.characterService.getFavorites();
-      this.ehFavorito = favs.includes(this.personagem.id);
-    }
   }
 
   toggleFavorito() {
@@ -135,5 +130,34 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
     this.novoComentario = ''; // Limpa o campo
     this.carregarComentarios(); // Recarrega a lista de comentários
     this.atualizarIcones(); // Garante que ícones de usuário sejam renderizados
+  }
+
+  iniciarEdicao(comentario: any) {
+    this.editandoComentarioId = comentario.id;
+    this.textoEditado = comentario.text;
+    this.atualizarIcones();
+  }
+
+  cancelarEdicao() {
+    this.editandoComentarioId = null;
+    this.textoEditado = '';
+  }
+
+  salvarEdicao() {
+    if (this.editandoComentarioId && this.personagem) {
+      this.characterService.updateComment(this.personagem.id, this.editandoComentarioId, this.textoEditado);
+      this.cancelarEdicao();
+      this.carregarComentarios();
+    }
+  }
+
+  excluirComentario(comentarioId: number) {
+    if (confirm('Tem certeza que deseja excluir este comentário?')) {
+      if (this.personagem) {
+        this.characterService.deleteComment(this.personagem.id, comentarioId);
+        this.carregarComentarios();
+        this.mostrarToast('Comentário excluído.', 'info');
+      }
+    }
   }
 }
