@@ -24,6 +24,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   mostrarBotaoVoltarAoTopo: boolean = false;
 
   // === AUTENTICAÇÃO ===
+  usuario: any | null = null;
   get usuarioLogado(): boolean {
     return this.authService.isAuthenticated();
   }

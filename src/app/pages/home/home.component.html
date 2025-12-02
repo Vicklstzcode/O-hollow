@@ -85,13 +85,63 @@
           />
         </div>
 
-        <div class="flex flex-wrap gap-3">
-          <button
-            (click)="irParaAleatorio()"
-            class="px-6 py-3 glass-panel text-white font-medium rounded-lg hover:bg-white/10 transition-colors flex items-center gap-2 cursor-pointer"
+        <!-- ======================= PAINEL DO USUÁRIO ======================= -->
+        <div *ngIf="usuarioLogado && usuario" class="mt-10">
+          <h3
+            class="text-sm font-bold text-purple-400 uppercase tracking-wider mb-4"
           >
-            <i data-lucide="shuffle" class="w-4 h-4"></i> Aleatório
-          </button>
+            Seu Painel
+          </h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <!-- Card Favoritos -->
+            <a
+              routerLink="/favoritos"
+              class="glass-panel p-4 rounded-lg hover:bg-white/10 transition-colors flex items-center gap-4"
+            >
+              <div
+                class="w-12 h-12 bg-pink-500/20 rounded-lg flex items-center justify-center"
+              >
+                <i data-lucide="heart" class="w-6 h-6 text-pink-400"></i>
+              </div>
+              <div>
+                <p class="text-sm text-gray-400">Favoritos</p>
+                <p class="text-xl font-bold text-white">
+                  {{ favoritos.length }}
+                </p>
+              </div>
+            </a>
+            <!-- Card Sequência -->
+            <div class="glass-panel p-4 rounded-lg flex items-center gap-4">
+              <div
+                class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center"
+              >
+                <i data-lucide="flame" class="w-6 h-6 text-orange-400"></i>
+              </div>
+              <div>
+                <p class="text-sm text-gray-400">Sequência</p>
+                <p class="text-xl font-bold text-white">5 dias</p>
+                <!-- Dado estático por enquanto -->
+              </div>
+            </div>
+            <!-- Card Dashboard -->
+            <a
+              routerLink="/dashboard"
+              class="glass-panel p-4 rounded-lg hover:bg-white/10 transition-colors flex items-center gap-4"
+            >
+              <div
+                class="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center"
+              >
+                <i
+                  data-lucide="layout-dashboard"
+                  class="w-6 h-6 text-cyan-400"
+                ></i>
+              </div>
+              <div>
+                <p class="text-sm text-gray-400">Acessar</p>
+                <p class="text-xl font-bold text-white">Dashboard</p>
+              </div>
+            </a>
+          </div>
         </div>
       </div>
 
