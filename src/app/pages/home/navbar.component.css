@@ -1,0 +1,17 @@
+/* Estilos para links de navegação do Desktop */
+.nav-link {
+    @apply text-gray-400 hover:text-purple-400 transition-colors;
+}
+
+.nav-link-active {
+    @apply text-white font-bold;
+}
+
+/* Estilos para links do menu mobile */
+.mobile-nav-link {
+    @apply p-3 rounded-md text-gray-300 hover:bg-white/5 hover:text-white transition-colors flex items-center gap-3;
+}
+
+.mobile-nav-link-active {
+    @apply bg-purple-600/20 text-purple-300 font-semibold;
+}

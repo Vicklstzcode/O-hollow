@@ -3,6 +3,8 @@ import { CommonModule, Location } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CharacterService, Character } from '../../services/character.service';
+import { NavbarComponent } from "../home/navbar.component";
+// NavbarComponent import removed: unavailable at the referenced path
 
 // Declarações externas (Chart.js e Lucide)
 declare var Chart: any;
@@ -11,9 +13,9 @@ declare var lucide: any;
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, NavbarComponent],
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   
@@ -31,9 +33,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Dados para a Tabela
   atividadesRecentes: any[] = [];
-
-  // === CONTROLE DE INTERFACE ===
-  mobileMenuAberto: boolean = false;
 
   constructor(
     private characterService: CharacterService,
@@ -80,9 +79,9 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private gerarTabela() {
-    // Ordena por poder e pega os 5 mais fortes
-    this.atividadesRecentes = this.allCharacters
-      .sort((a, b) => b.powerLevel - a.powerLevel)
+    // Ordena por poder e pega os 5 mais fortes (não muta o array original)
+    const sorted = [...this.allCharacters].sort((a, b) => b.powerLevel - a.powerLevel);
+    this.atividadesRecentes = sorted
       .slice(0, 5)
       .map(char => {
         const danger = this.getNivelPerigo(char.powerLevel);
@@ -179,9 +178,5 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   voltarPagina() {
     this.location.back();
-  }
-
-  toggleMobileMenu() {
-    this.mobileMenuAberto = !this.mobileMenuAberto;
   }
 }

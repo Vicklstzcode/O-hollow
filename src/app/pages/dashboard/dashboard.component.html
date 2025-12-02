@@ -1,107 +1,15 @@
 <div class="min-h-screen relative flex flex-col">
   <!-- Canvas original restaurado -->
   <canvas id="particles-canvas"></canvas>
-  <!-- Navbar -->
-  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 glass-nav">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
-        <a routerLink="/home" class="flex items-center gap-2 group">
-          <div class="logo-container">
-            <i data-lucide="zap" class="w-6 h-6 text-white"></i>
-          </div>
-          <div>
-            <h1 class="logo-title">S.M.M.</h1>
-            <p class="logo-subtitle">SYSTEM 2.0</p>
-          </div>
-        </a>
 
-        <div class="hidden md:flex items-center gap-6 text-sm font-medium">
-          <a routerLink="/home" class="nav-link">Início</a>
-          <a routerLink="/dashboard" class="nav-link-active">Dashboard</a>
-          <a
-            routerLink="/home"
-            [queryParams]="{ filtro: 'Marvel' }"
-            class="nav-link"
-            >Heróis</a
-          >
-          <a routerLink="/favoritos" class="nav-link">Favoritos</a>
-        </div>
-
-        <div class="flex items-center gap-4">
-          <button class="btn-back" (click)="voltarPagina()">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            Voltar
-          </button>
-
-          <!-- Botão do Menu Hambúrguer (visível em telas pequenas) -->
-          <div class="md:hidden">
-            <button (click)="toggleMobileMenu()" class="text-white p-2">
-              <i data-lucide="menu" class="w-6 h-6"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Painel do Menu Mobile -->
-  <div
-    *ngIf="mobileMenuAberto"
-    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
-    (click)="toggleMobileMenu()"
-  ></div>
-  <div
-    *ngIf="mobileMenuAberto"
-    class="fixed top-0 right-0 h-full w-80 bg-slate-900/95 border-l border-white/10 z-[60] p-6 flex flex-col animate-slide-in-right"
-  >
-    <!-- Cabeçalho do Menu -->
-    <div class="flex justify-between items-center mb-8">
-      <h2 class="text-lg font-bold text-white">Menu</h2>
-      <button
-        (click)="toggleMobileMenu()"
-        class="text-gray-400 hover:text-white"
-      >
-        <i data-lucide="x" class="w-6 h-6"></i>
+  <app-navbar>
+    <div navbar-actions>
+      <button class="btn-back hidden md:flex" (click)="voltarPagina()">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        Voltar
       </button>
     </div>
-
-    <!-- Seção Minha Conta -->
-    <div class="mb-8 border-b border-white/10 pb-8">
-      <h3 class="text-xs uppercase text-gray-500 font-bold mb-4">
-        Minha Conta
-      </h3>
-      <div class="flex items-center gap-4">
-        <div
-          class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center"
-        >
-          <i data-lucide="user" class="w-6 h-6 text-white"></i>
-        </div>
-        <div>
-          <p class="font-bold text-white">Usuário Logado</p>
-          <p class="text-sm text-gray-400">usuario&#64;email.com</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Links de Navegação -->
-    <nav class="flex flex-col gap-2">
-      <a routerLink="/home" class="mobile-nav-link" (click)="toggleMobileMenu()"
-        >Início</a
-      >
-      <a
-        routerLink="/dashboard"
-        class="mobile-nav-link"
-        (click)="toggleMobileMenu()"
-        >Dashboard</a
-      >
-      <a
-        routerLink="/favoritos"
-        class="mobile-nav-link"
-        (click)="toggleMobileMenu()"
-        >Favoritos</a
-      >
-    </nav>
-  </div>
+  </app-navbar>
 
   <!-- Main Content -->
   <main

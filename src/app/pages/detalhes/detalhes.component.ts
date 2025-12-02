@@ -3,7 +3,8 @@ import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms'; // Importado para o ngModel
 import { CharacterService, Character } from '../../services/character.service';
-import { AuthService } from '../../services/auth.service'; // Importado para verificar login
+import { AuthService } from '../../services/auth.service';
+import { NavbarComponent } from "../home/navbar.component"; // Importado para verificar login
 
 // Declaração para usar ícones Lucide
 declare var lucide: any;
@@ -11,7 +12,7 @@ declare var lucide: any;
 @Component({
   selector: 'app-detalhes',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, NavbarComponent],
   templateUrl: './detalhes.component.html',
   styleUrl: './detalhes.component.css'
 })
@@ -35,7 +36,7 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
   textoEditado: string = '';
 
   // === CONTROLE DE INTERFACE ===
-  mobileMenuAberto: boolean = false;
+  favoritosCount: number = 0;
 
   // === AUTENTICAÇÃO ===
   get usuarioLogado(): boolean {
@@ -62,6 +63,8 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
           this.ehFavorito = this.characterService.getFavorites().includes(this.personagem.id);
           // E carrega os comentários
           this.carregarComentarios();
+          // Carrega a contagem de favoritos para a navbar
+          this.favoritosCount = this.characterService.getFavorites().length;
           // Atualiza os ícones da página
           this.atualizarIcones();
         } else {
@@ -82,10 +85,6 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
     }, 100);
   }
 
-  toggleMobileMenu() {
-    this.mobileMenuAberto = !this.mobileMenuAberto;
-  }
-
   voltarPagina() {
     this.location.back();
   }
@@ -95,6 +94,9 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
       // Chama o serviço para adicionar/remover
       const adicionou = this.characterService.toggleFavorite(this.personagem.id);
       this.ehFavorito = adicionou; // Atualiza o ícone (cheio ou vazio)
+      
+      // Atualiza a contagem de favoritos para a navbar
+      this.favoritosCount = this.characterService.getFavorites().length;
       
       // Mostra o Toast (igual ao seu JS)
       if (adicionou) {

@@ -1,29 +1,25 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CharacterService, Character } from '../../services/character.service';
+import { NavbarComponent } from "../home/navbar.component";
 
 declare var lucide: any;
 
 @Component({
   selector: 'app-favoritos',
   standalone: true,
-  imports: [CommonModule, RouterLink],
   templateUrl: './favoritos.component.html',
-  styleUrl: './favoritos.component.css'
+  styleUrls: ['./favoritos.component.css'],
+  imports: [CommonModule, RouterLink, NavbarComponent]
 })
 export class FavoritosComponent implements OnInit, AfterViewInit {
-toggleMobileMenu() {
-throw new Error('Method not implemented.');
-}
-  
   meusFavoritos: Character[] = [];
   
   // Variáveis para o Toast
   exibirToast: boolean = false;
   mensagemToast: string = '';
   tipoToast: 'success' | 'info' = 'info';
-mobileMenuAberto: any;
 
   constructor(private characterService: CharacterService) {}
 

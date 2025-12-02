@@ -1,0 +1,153 @@
+<!-- Navbar -->
+<nav
+  id="navbar"
+  class="fixed top-0 left-0 right-0 z-50 bg-black/70 backdrop-blur-lg border-b border-white/5"
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <a routerLink="/home" class="flex items-center gap-2 group">
+        <div
+          class="w-10 h-10 bg-gradient-to-br from-purple-600 to-cyan-500 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.5)]"
+        >
+          <i data-lucide="zap" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <h1
+            class="text-sm tracking-wider font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400"
+          >
+            MYSTICOS
+          </h1>
+          <p class="text-[10px] text-cyan-400 tracking-[0.2em]">
+            Coven of Chaos
+          </p>
+        </div>
+      </a>
+
+      <!-- Links Desktop -->
+      <div class="hidden md:flex items-center gap-6 text-sm font-medium">
+        <a
+          routerLink="/home"
+          routerLinkActive="nav-link-active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-link"
+          >Início</a
+        >
+        <a
+          routerLink="/dashboard"
+          routerLinkActive="nav-link-active"
+          class="nav-link"
+          >Dashboard</a
+        >
+        <a
+          routerLink="/favoritos"
+          routerLinkActive="nav-link-active"
+          class="nav-link relative"
+        >
+          Favoritos
+          <span
+            *ngIf="favoritesCount > 0"
+            class="absolute -top-2 -right-3 bg-pink-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center animate-pulse"
+          >
+            {{ favoritesCount }}
+          </span>
+        </a>
+      </div>
+
+      <!-- Ações do Lado Direito -->
+      <div class="flex items-center gap-4">
+        <!-- Usamos ng-content para permitir que cada página insira seus próprios botões aqui -->
+        <ng-content select="[navbar-actions]"></ng-content>
+
+        <!-- Botão do Menu Hambúrguer -->
+        <div class="md:hidden">
+          <button (click)="toggleMobileMenu()" class="text-white p-2">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Painel do Menu Mobile -->
+<div
+  *ngIf="mobileMenuAberto"
+  class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+  (click)="toggleMobileMenu()"
+></div>
+<div
+  *ngIf="mobileMenuAberto"
+  class="fixed top-0 right-0 h-full w-80 bg-slate-900/95 border-l border-white/10 z-[60] p-6 flex flex-col animate-slide-in-right"
+>
+  <!-- Cabeçalho do Menu -->
+  <div class="flex justify-between items-center mb-8">
+    <h2 class="text-lg font-bold text-white">Menu</h2>
+    <button (click)="toggleMobileMenu()" class="text-gray-400 hover:text-white">
+      <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+  </div>
+
+  <!-- Seção Minha Conta -->
+  <div class="mb-8 border-b border-white/10 pb-8">
+    <h3 class="text-xs uppercase text-gray-500 font-bold mb-4">Minha Conta</h3>
+    <div class="flex items-center gap-4">
+      <div
+        class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center"
+      >
+        <i data-lucide="user" class="w-6 h-6 text-white"></i>
+      </div>
+      <div>
+        <p class="font-bold text-white">Usuário Logado</p>
+        <p class="text-sm text-gray-400">usuario&#64;email.com</p>
+      </div>
+    </div>
+    <div class="mt-4 flex gap-2">
+      <button
+        class="flex-1 text-xs py-2 bg-white/5 hover:bg-white/10 rounded-md"
+      >
+        Editar Perfil
+      </button>
+      <button
+        class="flex-1 text-xs py-2 bg-white/5 hover:bg-white/10 rounded-md"
+      >
+        Alterar Senha
+      </button>
+    </div>
+  </div>
+
+  <!-- Links de Navegação Mobile -->
+  <nav class="flex flex-col gap-2">
+    <a
+      routerLink="/home"
+      routerLinkActive="mobile-nav-link-active"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="mobile-nav-link"
+      (click)="toggleMobileMenu()"
+      >Início</a
+    >
+    <a
+      routerLink="/dashboard"
+      routerLinkActive="mobile-nav-link-active"
+      class="mobile-nav-link"
+      (click)="toggleMobileMenu()"
+      >Dashboard</a
+    >
+    <a
+      routerLink="/favoritos"
+      routerLinkActive="mobile-nav-link-active"
+      class="mobile-nav-link"
+      (click)="toggleMobileMenu()"
+      >Favoritos</a
+    >
+  </nav>
+
+  <div class="mt-auto">
+    <button
+      *ngIf="usuarioLogado"
+      (click)="handleLogout(); toggleMobileMenu()"
+      class="w-full mobile-nav-link bg-red-500/20 text-red-300"
+    >
+      Sair
+    </button>
+  </div>
+</div>

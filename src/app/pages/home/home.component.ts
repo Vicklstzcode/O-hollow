@@ -3,7 +3,8 @@ import { CommonModule, DOCUMENT } from '@angular/common';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CharacterService, Character } from '../../services/character.service';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth.service'; // Removido, pois não é usado diretamente aqui
+import { NavbarComponent } from './navbar.component';
 
 // Declaração para os ícones Lucide
 declare var lucide: any;
@@ -11,7 +12,7 @@ declare var lucide: any;
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, NavbarComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
@@ -21,7 +22,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // === CONTROLE DE INTERFACE ===
   mostrarBotaoVoltarAoTopo: boolean = false;
-  mobileMenuAberto: boolean = false;
 
   // === AUTENTICAÇÃO ===
   get usuarioLogado(): boolean {
@@ -136,10 +136,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     setTimeout(() => {
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }, 100);
-  }
-
-  toggleMobileMenu() {
-    this.mobileMenuAberto = !this.mobileMenuAberto;
   }
 
   // === LÓGICA DE FILTROS ===
