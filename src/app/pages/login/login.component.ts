@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth.service'; // Importamos o serviço de autenticação
 
 @Component({
@@ -65,8 +65,12 @@ cadastroData: any = {};
   fazerLogin() {
     console.log('Autenticando...');
     // Chama o serviço para logar o usuário
-    // (Aqui você pode passar o usuário digitado no form, se quiser)
-    this.authService.login('UsuarioIniciado');
+    // Criamos um objeto User fictício para o login
+    this.authService.login({
+      id: 1, // ID fictício
+      name: 'Usuário Teste', // Nome fictício
+      email: 'teste@mysticos.com' // Email fictício
+    });
   }
 
   fazerCadastro() {

@@ -7,6 +7,7 @@ import { FavoritosComponent } from './pages/favoritos/favoritos.component';
 import { DetalhesComponent } from './pages/detalhes/detalhes.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { UniversoComponent } from './pages/universo/universo.component';
+import { PerfilComponent } from './pages/detalhes/perfil.component'; // 1. Importe o novo componente
 
 export const routes: Routes = [
     // Rota padrão redireciona para login
@@ -39,6 +40,12 @@ export const routes: Routes = [
     { 
       path: 'universo/:nome', 
       component: UniversoComponent, 
+      canActivate: [authGuard] 
+    },
+
+    { // 2. Adicione a nova rota de perfil, protegida pelo guard
+      path: 'perfil', 
+      component: PerfilComponent, 
       canActivate: [authGuard] 
     },
 

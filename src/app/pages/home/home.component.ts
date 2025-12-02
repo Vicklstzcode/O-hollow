@@ -1,9 +1,9 @@
 import { Component, OnInit, AfterViewInit, OnDestroy, Inject, HostListener } from '@angular/core';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
 import { CharacterService, Character } from '../../services/character.service';
-import { AuthService } from '../../services/auth.service'; // Removido, pois não é usado diretamente aqui
+import { AuthService, User } from '../../services/auth.service'; // Importe User do auth.service
+import { Subscription } from 'rxjs'; // Importe Subscription do rxjs
 import { NavbarComponent } from './navbar.component';
 
 // Declaração para os ícones Lucide
@@ -17,6 +17,9 @@ declare var lucide: any;
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
+sair() {
+throw new Error('Method not implemented.');
+}
   // === INSCRIÇÕES (Subscriptions) ===
   private charactersSubscription: Subscription | undefined;
 
@@ -24,14 +27,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   mostrarBotaoVoltarAoTopo: boolean = false;
 
   // === AUTENTICAÇÃO ===
-  usuario: any | null = null;
+  usuario: User | null = null; // User type is not exported from auth.service
   get usuarioLogado(): boolean {
     return this.authService.isAuthenticated();
-  }
-
-  sair() {
-    this.authService.logout();
-    this.router.navigate(['/login']);
   }
 
   // === SCROLL TO TOP ===
@@ -120,6 +118,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
     // 2. Carrega dados que não são reativos (ou que são gerenciados separadamente)
     this.favoritos = this.characterService.getFavorites();
+    if (this.usuarioLogado) {
+      this.usuario = this.authService.getCurrentUser();
+    }
+
     this.iniciarCarrossel();
   }
 
