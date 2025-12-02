@@ -1,4 +1,4 @@
-<div class="min-h-screen relative">
+<div class="min-h-screen relative flex flex-col">
   <!-- Canvas original restaurado -->
   <canvas id="particles-canvas"></canvas>
 
@@ -87,7 +87,7 @@
     <i data-lucide="arrow-up" class="w-6 h-6"></i>
   </button>
 
-  <main class="pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-12">
+  <main class="flex-grow pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-12 w-full">
     <div
       class="grid lg:grid-cols-2 gap-12 items-center mb-20 animate-fade-in-up"
     >
@@ -426,4 +426,31 @@
       </div>
     </div>
   </main>
+
+  <footer
+    class="w-full bg-black/30 border-t border-white/10 mt-auto py-6 px-4 sm:px-6 lg:px-8"
+  >
+    <div
+      class="max-w-7xl mx-auto text-center text-gray-400 flex flex-col md:flex-row justify-between items-center gap-4"
+    >
+      <p class="text-sm">
+        &copy; 2024 Mysticos. Todos os direitos reservados.
+      </p>
+      <div class="flex items-center gap-6 text-sm">
+        <a href="#" class="hover:text-purple-400 transition-colors">Sobre</a>
+        <a href="#" class="hover:text-purple-400 transition-colors"
+          >Política de Privacidade</a
+        >
+        <a href="#" class="hover:text-purple-400 transition-colors">Contato</a>
+      </div>
+      <div class="flex justify-center gap-4">
+        <a href="#" class="text-gray-500 hover:text-white transition-colors"
+          ><i data-lucide="twitter" class="w-5 h-5"></i
+        ></a>
+        <a href="#" class="text-gray-500 hover:text-white transition-colors"
+          ><i data-lucide="instagram" class="w-5 h-5"></i
+        ></a>
+      </div>
+    </div>
+  </footer>
 </div>
