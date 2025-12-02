@@ -1,6 +1,7 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, Inject, HostListener } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, Inject } from '@angular/core';
 import { CommonModule, DOCUMENT } from '@angular/common';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink, Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { CharacterService, Character } from '../../services/character.service';
 import { AuthService } from '../../services/auth.service';
 
@@ -10,11 +11,14 @@ declare var lucide: any;
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink,],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
+  // === INSCRIÇÕES (Subscriptions) ===
+  private charactersSubscription: Subscription | undefined;
+
   // === CONTROLE DE INTERFACE ===
   mostrarBotaoVoltarAoTopo: boolean = false;
 
@@ -29,7 +33,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // === SCROLL TO TOP ===
-  @HostListener('window:scroll', [])
   onWindowScroll() {
     const offset = this.document.documentElement.scrollTop || this.document.body.scrollTop || 0;
     this.mostrarBotaoVoltarAoTopo = offset > 200;
@@ -53,7 +56,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // === CARROSSEL ===
   carouselIndex: number = 0;
   carouselItems: Character[] = [];
-  private intervaloCarrossel: number | undefined;
+  private intervaloCarrossel: any; // Correção: NodeJS.Timeout para any
 
   // === ARENA DE BATALHA ===
   votosWanda: number = 0;
@@ -64,21 +67,31 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private characterService: CharacterService,
     private router: Router,
+    private route: ActivatedRoute, // Adicionado para ler parâmetros da rota
     private authService: AuthService,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
   ngOnInit() {
-    // 1. Carrega dados do Serviço
-    this.todosPersonagens = this.characterService.getCharacters();
-    this.personagensFiltrados = [...this.todosPersonagens];
-    this.favoritos = this.characterService.getFavorites();
-    
-    // 2. Prepara o Carrossel (pega os 3 primeiros)
-    this.carouselItems = this.todosPersonagens.slice(0, 3);
-    this.iniciarCarrossel();
+    // Lê o parâmetro 'filtro' da URL, se existir
+    this.route.queryParams.subscribe(params => {
+      const filtroDaUrl = params['filtro'];
+      if (filtroDaUrl && this.filtros.includes(filtroDaUrl)) {
+        this.filtroAtual = filtroDaUrl;
+      }
+    });
 
-    // 3. Carrega Votos da Arena
+    // 1. Inscreve-se para receber atualizações dos personagens
+    this.charactersSubscription = this.characterService.getCharactersObservable().subscribe(characters => {
+      this.todosPersonagens = characters;
+      this.mudarFiltro(this.filtroAtual); // Reaplica o filtro atual com os novos dados
+      this.carouselItems = this.todosPersonagens.slice(0, 3);
+      this.atualizarIcones();
+    });
+
+    // 2. Carrega dados que não são reativos (ou que são gerenciados separadamente)
+    this.favoritos = this.characterService.getFavorites();
+    this.iniciarCarrossel();
     this.atualizarArena();
   }
 
@@ -87,6 +100,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    // Cancela a inscrição para evitar vazamentos de memória
+    this.charactersSubscription?.unsubscribe();
     if (this.intervaloCarrossel) clearInterval(this.intervaloCarrossel);
   }
 
@@ -174,5 +189,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       const randomId = this.todosPersonagens[Math.floor(Math.random() * this.todosPersonagens.length)].id;
       this.router.navigate(['/detalhes', randomId]);
     }
+  }
+
+  scrollToSection(sectionId: string) {
+    const element = this.document.getElementById(sectionId);
+    element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }

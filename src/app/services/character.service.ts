@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { CHARACTERS_DATA } from '../data/characters-data'; // Importa a "API"
 
 // A interface agora deve incluir todos os campos que usamos
@@ -23,14 +24,13 @@ export interface Character {
   providedIn: 'root'
 })
 export class CharacterService {
-  getCharactersObservable() {
-    throw new Error('Method not implemented.');
-  }
+  // Chaves para o localStorage
+  private readonly CHARACTERS_KEY = 'mysticos_characters';
 
-  // Carrega os dados iniciais
-  // Nota: Em uma app real, isso viria de um http.get()
-  private characters: Character[] = CHARACTERS_DATA;
+  // BehaviorSubject para manter e emitir a lista de personagens
+  private charactersSubject: BehaviorSubject<Character[]>;
 
+  // Dados estáticos dos universos (poderiam vir de outro lugar)
   private universesData: any = {
     'Marvel': {
       name: 'Marvel',
@@ -52,20 +52,32 @@ export class CharacterService {
     }
   };
 
-  constructor() { }
+  constructor() {
+    // Ao iniciar o serviço, carrega os dados do localStorage ou usa os dados iniciais
+    const storedCharacters = localStorage.getItem(this.CHARACTERS_KEY);
+    const initialCharacters = storedCharacters ? JSON.parse(storedCharacters) : CHARACTERS_DATA;
+    this.charactersSubject = new BehaviorSubject<Character[]>(initialCharacters);
+  }
+
+  // --- MÉTODOS REATIVOS (com Observables) ---
+
+  getCharactersObservable(): Observable<Character[]> {
+    return this.charactersSubject.asObservable();
+  }
 
   // === MÉTODOS DE LEITURA ===
 
+  // Retorna o valor atual (para componentes não reativos ou acesso síncrono)
   getCharacters() {
-    return this.characters;
+    return this.charactersSubject.getValue();
   }
 
   getCharacterById(id: number): Character | undefined {
-    return this.characters.find(c => c.id === id);
+    return this.getCharacters().find(c => c.id === id);
   }
 
   getCharactersByUniverse(universeName: string): Character[] {
-    return this.characters.filter(c => c.universe === universeName);
+    return this.getCharacters().filter(c => c.universe === universeName);
   }
 
   getUniverseInfo(name: string) {
@@ -76,22 +88,29 @@ export class CharacterService {
       characterCount: 0
     };
     
-    const count = this.characters.filter(c => c.universe === name).length;
+    const count = this.getCharacters().filter(c => c.universe === name).length;
     return { ...info, characterCount: count };
   }
 
   // === MÉTODOS DE ESCRITA (Adicionar Personagem) ===
 
   addCharacter(newChar: Character) {
+    const currentCharacters = this.getCharacters();
     // Gera um ID novo (pega o último ID + 1)
-    const newId = this.characters.length > 0 
-        ? Math.max(...this.characters.map(c => c.id)) + 1 
+    const newId = currentCharacters.length > 0 
+        ? Math.max(...currentCharacters.map(c => c.id)) + 1 
         : 1;
     
     newChar.id = newId;
-    this.characters.push(newChar);
+    const updatedCharacters = [...currentCharacters, newChar];
     
-    console.log('Personagem adicionado:', newChar);
+    this.updateCharacters(updatedCharacters);
+  }
+
+  // Método privado para atualizar o Subject e o localStorage
+  private updateCharacters(characters: Character[]) {
+    localStorage.setItem(this.CHARACTERS_KEY, JSON.stringify(characters));
+    this.charactersSubject.next(characters);
   }
 
   // === FAVORITOS E VOTAÇÃO (Mantidos) ===

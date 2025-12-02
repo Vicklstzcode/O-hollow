@@ -1,6 +1,7 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { CharacterService, Character } from '../../services/character.service';
 
 // Declarações externas (Chart.js e Lucide)
@@ -14,8 +15,13 @@ declare var lucide: any;
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent implements OnInit, AfterViewInit {
+export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   
+  private charactersSubscription: Subscription | undefined;
+  private energyChart: any;
+  private speciesChart: any;
+  private allCharacters: Character[] = [];
+
   // KPIs (Indicadores)
   totalEntidades: number = 0;
   ameacasAtivas: number = 0;
@@ -29,36 +35,48 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   constructor(private characterService: CharacterService) {}
 
   ngOnInit() {
-    this.calcularMetricas();
-    this.gerarTabela();
+    this.charactersSubscription = this.characterService.getCharactersObservable().subscribe(characters => {
+      this.allCharacters = characters;
+      this.atualizarDashboard();
+    });
+  }
+
+  ngOnDestroy() {
+    // Cancela a inscrição para evitar vazamentos de memória
+    if (this.charactersSubscription) {
+      this.charactersSubscription.unsubscribe();
+    }
   }
 
   ngAfterViewInit() {
     // Inicia ícones e gráficos DEPOIS que o HTML carrega
     setTimeout(() => {
       if (typeof lucide !== 'undefined') lucide.createIcons();
-      this.renderizarGraficos();
     }, 100);
   }
 
-  calcularMetricas() {
-    const todos = this.characterService.getCharacters();
-    
-    this.totalEntidades = todos.length;
+  private atualizarDashboard(): void {
+    this.calcularMetricas();
+    this.gerarTabela();
+    // Garante que os gráficos só renderizem depois da view
+    setTimeout(() => this.renderizarGraficos(), 0);
+  }
+
+  private calcularMetricas() {
+    this.totalEntidades = this.allCharacters.length;
     // Ameaças: Poder >= 95
-    this.ameacasAtivas = todos.filter(c => c.powerLevel >= 95).length;
+    this.ameacasAtivas = this.allCharacters.filter(c => c.powerLevel >= 95).length;
     // Novos: ID > 5 (Simulação)
-    this.novosRegistros = todos.filter(c => c.id > 5).length;
+    this.novosRegistros = this.allCharacters.filter(c => c.id > 5).length;
     
-    const unis = [...new Set(todos.map(c => c.universe))];
+    const unis = [...new Set(this.allCharacters.map(c => c.universe))];
     this.universosMonitorados = unis.length;
     this.listaUniversos = unis.join(', ');
   }
 
-  gerarTabela() {
-    const todos = this.characterService.getCharacters();
+  private gerarTabela() {
     // Ordena por poder e pega os 5 mais fortes
-    this.atividadesRecentes = todos
+    this.atividadesRecentes = this.allCharacters
       .sort((a, b) => b.powerLevel - a.powerLevel)
       .slice(0, 5)
       .map(char => {
@@ -81,21 +99,25 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     return { text: "Moderado", class: "bg-blue-500/10 text-blue-400", barClass: "bg-blue-500" };
   }
 
-  renderizarGraficos() {
-    const todos = this.characterService.getCharacters();
-    if (!todos.length) return;
+  private renderizarGraficos() {
+    if (!this.allCharacters.length || typeof Chart === 'undefined') return;
+
+    // Destrói gráficos antigos antes de renderizar novos
+    this.energyChart?.destroy();
+    this.speciesChart?.destroy();
 
     // --- GRÁFICO 1: Barras (Energia Média por Universo) ---
-    const unis = [...new Set(todos.map(c => c.universe))];
+    const unis = [...new Set(this.allCharacters.map(c => c.universe))];
     const mediaPoder = unis.map(u => {
-      const chars = todos.filter(c => c.universe === u);
+      const chars = this.allCharacters.filter(c => c.universe === u);
+      if (chars.length === 0) return 0;
       const total = chars.reduce((sum, c) => sum + c.powerLevel, 0);
       return Math.round(total / chars.length);
     });
 
     const ctxEnergy = document.getElementById('energyChart') as HTMLCanvasElement;
     if (ctxEnergy) {
-      new Chart(ctxEnergy, {
+      this.energyChart = new Chart(ctxEnergy, {
         type: 'bar',
         data: {
           labels: unis,
@@ -120,9 +142,8 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     }
 
     // --- GRÁFICO 2: Pizza (Tipos) ---
-    // Conta quantos de cada tipo existem
     const tiposMap: any = {};
-    todos.forEach(c => {
+    this.allCharacters.forEach(c => {
         const tipo = c.type || 'Outros';
         tiposMap[tipo] = (tiposMap[tipo] || 0) + 1;
     });
@@ -132,7 +153,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     const ctxSpecies = document.getElementById('speciesChart') as HTMLCanvasElement;
     if (ctxSpecies) {
-      new Chart(ctxSpecies, {
+      this.speciesChart = new Chart(ctxSpecies, {
         type: 'doughnut',
         data: {
           labels: labelsTipos,

@@ -18,7 +18,12 @@
         <div class="hidden md:flex items-center gap-6 text-sm font-medium">
           <a routerLink="/home" class="nav-link">Início</a>
           <a routerLink="/dashboard" class="nav-link-active">Dashboard</a>
-          <a routerLink="/home" class="nav-link">Heróis</a>
+          <a
+            routerLink="/home"
+            [queryParams]="{ filtro: 'Marvel' }"
+            class="nav-link"
+            >Heróis</a
+          >
           <a routerLink="/favoritos" class="nav-link">Favoritos</a>
         </div>
 
@@ -34,7 +39,6 @@
 
   <!-- Main Content -->
   <main class="pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-12">
-    
     <!-- Header -->
     <div class="header-section">
       <div class="header-icon-wrapper">
@@ -48,9 +52,8 @@
 
     <!-- KPI Cards Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      
       <!-- Total Entidades -->
-      <div class="kpi-card kpi-purple" style="animation-delay: 100ms;">
+      <div class="kpi-card kpi-purple" style="animation-delay: 100ms">
         <div class="kpi-header">
           <div>
             <p class="kpi-label">Total de Entidades</p>
@@ -69,7 +72,7 @@
       </div>
 
       <!-- Ameaças Ativas -->
-      <div class="kpi-card kpi-red" style="animation-delay: 200ms;">
+      <div class="kpi-card kpi-red" style="animation-delay: 200ms">
         <div class="kpi-header">
           <div>
             <p class="kpi-label">Ameaças Ativas</p>
@@ -88,7 +91,7 @@
       </div>
 
       <!-- Novos Registros -->
-      <div class="kpi-card kpi-green" style="animation-delay: 300ms;">
+      <div class="kpi-card kpi-green" style="animation-delay: 300ms">
         <div class="kpi-header">
           <div>
             <p class="kpi-label">Novos Registros</p>
@@ -107,7 +110,7 @@
       </div>
 
       <!-- Universos Monitorados -->
-      <div class="kpi-card kpi-cyan" style="animation-delay: 400ms;">
+      <div class="kpi-card kpi-cyan" style="animation-delay: 400ms">
         <div class="kpi-header">
           <div>
             <p class="kpi-label">Universos</p>
@@ -118,7 +121,10 @@
           </div>
         </div>
         <div class="kpi-footer">
-          <span class="kpi-trend kpi-trend-neutral truncate" [title]="listaUniversos">
+          <span
+            class="kpi-trend kpi-trend-neutral truncate"
+            [title]="listaUniversos"
+          >
             <i data-lucide="layers" class="w-3 h-3"></i>
             {{ listaUniversos }}
           </span>
@@ -128,13 +134,14 @@
 
     <!-- Charts Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-      
       <!-- Bar Chart -->
-      <div class="chart-panel lg:col-span-2" style="animation-delay: 500ms;">
+      <div class="chart-panel lg:col-span-2" style="animation-delay: 500ms">
         <div class="chart-header">
           <div>
             <h3 class="chart-title">Nível de Poder Médio por Universo</h3>
-            <p class="chart-subtitle">Comparativo entre os principais universos</p>
+            <p class="chart-subtitle">
+              Comparativo entre os principais universos
+            </p>
           </div>
           <div class="chart-actions">
             <button class="chart-btn">
@@ -151,7 +158,7 @@
       </div>
 
       <!-- Pie Chart -->
-      <div class="chart-panel" style="animation-delay: 600ms;">
+      <div class="chart-panel" style="animation-delay: 600ms">
         <div class="chart-header">
           <div>
             <h3 class="chart-title">Distribuição por Tipo</h3>
@@ -168,7 +175,7 @@
     </div>
 
     <!-- Activity Table -->
-    <div class="table-panel" style="animation-delay: 700ms;">
+    <div class="table-panel" style="animation-delay: 700ms">
       <div class="table-header">
         <div class="flex items-center gap-3">
           <div class="table-icon">
@@ -201,16 +208,22 @@
               <td class="table-td">
                 <div class="entity-cell">
                   <div class="entity-avatar">
-                    <img [src]="item.image" [alt]="item.name" class="w-full h-full object-cover">
+                    <img
+                      [src]="item.image"
+                      [alt]="item.name"
+                      class="w-full h-full object-cover"
+                    />
                   </div>
                   <span class="entity-name">{{ item.name }}</span>
                 </div>
               </td>
               <td class="table-td hidden md:table-cell">
-                <span class="universe-badge" 
-                      [style.background-color]="item.color + '20'" 
-                      [style.color]="item.color"
-                      [style.border-color]="item.color + '40'">
+                <span
+                  class="universe-badge"
+                  [style.background-color]="item.color + '20'"
+                  [style.color]="item.color"
+                  [style.border-color]="item.color + '40'"
+                >
                   {{ item.universe }}
                 </span>
               </td>
@@ -223,9 +236,11 @@
               <td class="table-td">
                 <div class="danger-cell">
                   <div class="danger-bar">
-                    <div class="danger-fill" 
-                         [ngClass]="item.dangerBarClass" 
-                         [style.width.%]="item.powerLevel"></div>
+                    <div
+                      class="danger-fill"
+                      [ngClass]="item.dangerBarClass"
+                      [style.width.%]="item.powerLevel"
+                    ></div>
                   </div>
                   <span class="danger-text" [ngClass]="item.dangerClass">
                     {{ item.dangerText }}
@@ -233,7 +248,10 @@
                 </div>
               </td>
               <td class="table-td text-right">
-                <button [routerLink]="['/detalhes', item.id]" class="btn-action">
+                <button
+                  [routerLink]="['/detalhes', item.id]"
+                  class="btn-action"
+                >
                   <span>Ver Dossiê</span>
                   <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </button>
@@ -243,6 +261,5 @@
         </table>
       </div>
     </div>
-
   </main>
 </div>

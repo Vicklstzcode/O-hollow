@@ -10,7 +10,7 @@
         <div
           class="flex items-center gap-2 cursor-pointer"
           (click)="scrollToTop()"
-        > 
+        >
           <div
             class="w-10 h-10 bg-gradient-to-br from-purple-600 to-cyan-500 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.5)]"
           >
@@ -22,7 +22,9 @@
             >
               MYSTICOS
             </h1>
-            <p class="text-[10px] text-cyan-400 tracking-[0.2em]">Coven of Chaos</p>
+            <p class="text-[10px] text-cyan-400 tracking-[0.2em]">
+              Coven of Chaos
+            </p>
           </div>
         </div>
 
@@ -43,7 +45,7 @@
             >Heróis</a
           >
           <a
-            href="#battle-arena"
+            (click)="scrollToSection('battle-arena')"
             class="text-gray-400 hover:text-purple-400 transition-colors cursor-pointer"
             >Arena</a
           >
@@ -81,7 +83,11 @@
     </div>
   </nav>
 
-  <button *ngIf="mostrarBotaoVoltarAoTopo" (click)="scrollToTop()" class="fixed bottom-5 right-5 bg-purple-600 text-white p-3 rounded-full shadow-lg hover:bg-purple-700 transition-all z-50">
+  <button
+    *ngIf="mostrarBotaoVoltarAoTopo"
+    (click)="scrollToTop()"
+    class="fixed bottom-5 right-5 bg-purple-600 text-white p-3 rounded-full shadow-lg hover:bg-purple-700 transition-all z-50"
+  >
     <i data-lucide="arrow-up" class="w-6 h-6"></i>
   </button>
 
@@ -113,8 +119,8 @@
         </h1>
 
         <p class="text-gray-400 text-lg max-w-xl mb-8 leading-relaxed">
-          Acesse a base de dados de seus heróis, vilões e entidades cósmicas favoritas.
-          Compare poderes e decida batalhas.
+          Acesse a base de dados de seus heróis, vilões e entidades cósmicas
+          favoritas. Compare poderes e decida batalhas.
         </p>
 
         <div class="relative max-w-md mb-8 group">
@@ -307,10 +313,7 @@
             <div
               class="w-32 h-32 md:w-48 md:h-48 rounded-full border-4 border-red-500 overflow-hidden mb-4 shadow-[0_0_30px_rgba(220,38,38,0.4)] transition-transform group-hover:scale-110"
             >
-              <img
-                src="/imagens/Ww.jpg"
-                class="w-full h-full object-cover"
-              />
+              <img src="/imagens/Ww.jpg" class="w-full h-full object-cover" />
             </div>
             <h3 class="text-xl font-bold">Feiticeira Escarlate</h3>
             <button
