@@ -75,6 +75,13 @@
             Sair
           </button>
         </div>
+
+        <!-- Botão do Menu Hambúrguer (visível em telas pequenas) -->
+        <div class="md:hidden">
+          <button (click)="toggleMobileMenu()" class="text-white p-2">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+        </div>
       </div>
     </div>
   </nav>
@@ -87,7 +94,81 @@
     <i data-lucide="arrow-up" class="w-6 h-6"></i>
   </button>
 
-  <main class="flex-grow pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-12 w-full">
+  <!-- Painel do Menu Mobile -->
+  <div
+    *ngIf="mobileMenuAberto"
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+    (click)="toggleMobileMenu()"
+  ></div>
+  <div
+    *ngIf="mobileMenuAberto"
+    class="fixed top-0 right-0 h-full w-80 bg-slate-900/95 border-l border-white/10 z-[60] p-6 flex flex-col animate-slide-in-right"
+  >
+    <!-- Cabeçalho do Menu -->
+    <div class="flex justify-between items-center mb-8">
+      <h2 class="text-lg font-bold text-white">Menu</h2>
+      <button
+        (click)="toggleMobileMenu()"
+        class="text-gray-400 hover:text-white"
+      >
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Seção Minha Conta -->
+    <div class="mb-8 border-b border-white/10 pb-8">
+      <h3 class="text-xs uppercase text-gray-500 font-bold mb-4">
+        Minha Conta
+      </h3>
+      <div class="flex items-center gap-4">
+        <div
+          class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center"
+        >
+          <!-- Placeholder para foto do usuário -->
+          <i data-lucide="user" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <p class="font-bold text-white">Usuário Logado</p>
+          <p class="text-sm text-gray-400">usuario&#64;email.com</p>
+        </div>
+      </div>
+      <div class="mt-4 flex gap-2">
+        <button
+          class="flex-1 text-xs py-2 bg-white/5 hover:bg-white/10 rounded-md"
+        >
+          Editar Perfil
+        </button>
+        <button
+          class="flex-1 text-xs py-2 bg-white/5 hover:bg-white/10 rounded-md"
+        >
+          Alterar Senha
+        </button>
+      </div>
+    </div>
+
+    <!-- Links de Navegação -->
+    <nav class="flex flex-col gap-2">
+      <a routerLink="/" class="mobile-nav-link" (click)="toggleMobileMenu()"
+        >Início</a
+      >
+      <a
+        routerLink="/dashboard"
+        class="mobile-nav-link"
+        (click)="toggleMobileMenu()"
+        >Dashboard</a
+      >
+      <a
+        routerLink="/favoritos"
+        class="mobile-nav-link"
+        (click)="toggleMobileMenu()"
+        >Favoritos</a
+      >
+    </nav>
+  </div>
+
+  <main
+    class="flex-grow pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pb-12 w-full"
+  >
     <div
       class="grid lg:grid-cols-2 gap-12 items-center mb-20 animate-fade-in-up"
     >
@@ -433,9 +514,7 @@
     <div
       class="max-w-7xl mx-auto text-center text-gray-400 flex flex-col md:flex-row justify-between items-center gap-4"
     >
-      <p class="text-sm">
-        &copy; 2024 Mysticos. Todos os direitos reservados.
-      </p>
+      <p class="text-sm">&copy; 2024 Mysticos. Todos os direitos reservados.</p>
       <div class="flex items-center gap-6 text-sm">
         <a href="#" class="hover:text-purple-400 transition-colors">Sobre</a>
         <a href="#" class="hover:text-purple-400 transition-colors"

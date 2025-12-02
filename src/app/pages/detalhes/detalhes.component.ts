@@ -34,6 +34,9 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
   editandoComentarioId: number | null = null;
   textoEditado: string = '';
 
+  // === CONTROLE DE INTERFACE ===
+  mobileMenuAberto: boolean = false;
+
   // === AUTENTICAÇÃO ===
   get usuarioLogado(): boolean {
     return this.authService.isAuthenticated();
@@ -77,6 +80,10 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
     setTimeout(() => {
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }, 100);
+  }
+
+  toggleMobileMenu() {
+    this.mobileMenuAberto = !this.mobileMenuAberto;
   }
 
   voltarPagina() {

@@ -53,9 +53,69 @@
             >Favoritos</a
           >
         </div>
+
+        <!-- Botão do Menu Hambúrguer (visível em telas pequenas) -->
+        <div class="md:hidden">
+          <button (click)="toggleMobileMenu()" class="text-white p-2">
+            <i data-lucide="menu" class="w-6 h-6"></i>
+          </button>
+        </div>
       </div>
     </div>
   </nav>
+
+  <!-- Painel do Menu Mobile -->
+  <div
+    *ngIf="mobileMenuAberto"
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+    (click)="toggleMobileMenu()"
+  ></div>
+  <div
+    *ngIf="mobileMenuAberto"
+    class="fixed top-0 right-0 h-full w-80 bg-slate-900/95 border-l border-white/10 z-[60] p-6 flex flex-col animate-slide-in-right"
+  >
+    <!-- Cabeçalho do Menu -->
+    <div class="flex justify-between items-center mb-8">
+      <h2 class="text-lg font-bold text-white">Menu</h2>
+      <button
+        (click)="toggleMobileMenu()"
+        class="text-gray-400 hover:text-white"
+      >
+        <i data-lucide="x" class="w-6 h-6"></i>
+      </button>
+    </div>
+
+    <!-- Seção Minha Conta -->
+    <div class="mb-8 border-b border-white/10 pb-8">
+      <h3 class="text-xs uppercase text-gray-500 font-bold mb-4">
+        Minha Conta
+      </h3>
+      <div class="flex items-center gap-4">
+        <div
+          class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center"
+        >
+          <i data-lucide="user" class="w-6 h-6 text-white"></i>
+        </div>
+        <div>
+          <p class="font-bold text-white">Usuário Logado</p>
+          <p class="text-sm text-gray-400">usuario&#64;email.com</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Links de Navegação -->
+    <nav class="flex flex-col gap-2">
+      <a routerLink="/home" class="mobile-nav-link" (click)="toggleMobileMenu()"
+        >Início</a
+      >
+      <a
+        routerLink="/favoritos"
+        class="mobile-nav-link"
+        (click)="toggleMobileMenu()"
+        >Favoritos</a
+      >
+    </nav>
+  </div>
 
   <main class="flex-grow pt-24 px-4 sm:px-6 lg:px-8 w-full">
     <div class="max-w-5xl mx-auto mb-8">

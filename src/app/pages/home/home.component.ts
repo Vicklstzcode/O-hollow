@@ -21,6 +21,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // === CONTROLE DE INTERFACE ===
   mostrarBotaoVoltarAoTopo: boolean = false;
+  mobileMenuAberto: boolean = false;
 
   // === AUTENTICAÇÃO ===
   get usuarioLogado(): boolean {
@@ -135,6 +136,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     setTimeout(() => {
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }, 100);
+  }
+
+  toggleMobileMenu() {
+    this.mobileMenuAberto = !this.mobileMenuAberto;
   }
 
   // === LÓGICA DE FILTROS ===

@@ -13,6 +13,9 @@ declare var lucide: any;
   styleUrl: './favoritos.component.css'
 })
 export class FavoritosComponent implements OnInit, AfterViewInit {
+toggleMobileMenu() {
+throw new Error('Method not implemented.');
+}
   
   meusFavoritos: Character[] = [];
   
@@ -20,6 +23,7 @@ export class FavoritosComponent implements OnInit, AfterViewInit {
   exibirToast: boolean = false;
   mensagemToast: string = '';
   tipoToast: 'success' | 'info' = 'info';
+mobileMenuAberto: any;
 
   constructor(private characterService: CharacterService) {}
 

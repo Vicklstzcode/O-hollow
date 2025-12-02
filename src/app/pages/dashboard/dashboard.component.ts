@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CharacterService, Character } from '../../services/character.service';
 
@@ -31,6 +31,9 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   // Dados para a Tabela
   atividadesRecentes: any[] = [];
+
+  // === CONTROLE DE INTERFACE ===
+  mobileMenuAberto: boolean = false;
 
   constructor(
     private characterService: CharacterService,
@@ -176,5 +179,9 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
   voltarPagina() {
     this.location.back();
+  }
+
+  toggleMobileMenu() {
+    this.mobileMenuAberto = !this.mobileMenuAberto;
   }
 }
