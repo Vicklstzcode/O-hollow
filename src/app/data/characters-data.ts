@@ -96,6 +96,7 @@ export const CHARACTERS_DATA: Character[] = [
     type: "Cosmic",
     power: "Onipotência",
     image: "imagens/LadyDeath.jpg",
+    gif: "RioVidal.gif.gif.gif",
     color: "#4b5563",
     symbol: "💀",
     history: "A personificação da morte no Universo Marvel, a Lady Death é uma entidade cósmica abstrata de poder quase infinito. Ela raramente interfere diretamente, mas sua influência é sentida em todo o cosmos. Ela é o objeto da afeição mórbida de Thanos.",
