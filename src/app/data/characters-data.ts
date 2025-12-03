@@ -45,7 +45,7 @@ export const CHARACTERS_DATA: Character[] = [
     type: "Magic",
     power: "Magia Ancestral",
     image: "imagens/BonnieBennet.jpg",
-    gif: "BonnoeBennet.gif.gif.gif",
+    gif: "Bonnie.gif.gif.gif",
     color: "#F59E0B",
     symbol: "⚜️",
     history: "Descendente de uma poderosa linhagem de bruxas de Salém, Bonnie Bennett é uma bruxa incrivelmente resiliente e poderosa. Ela dominou várias formas de magia, incluindo a Magia de Expressão, e frequentemente se sacrifica para proteger seus amigos de ameaças sobrenaturais em Mystic Falls.",
