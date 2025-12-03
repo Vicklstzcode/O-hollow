@@ -11,6 +11,7 @@ export interface Character {
   type: string;
   power: string;
   image: string;
+  gif?: string; // Adicionamos um campo opcional para o GIF
   color: string;
   symbol?: string;
   history?: string;

@@ -20,9 +20,8 @@
   <!-- Canvas original restaurado -->
   <canvas id="particles-canvas"></canvas>
 
-  <app-navbar [favoritesCount]="favoritosCount">
-    <!-- A página de detalhes não precisa de botões de ação específicos na navbar -->
-  </app-navbar>
+  <!-- Navbar: passar um valor numérico para evitar erro de tipo -->
+  <app-navbar [favoritesCount]="0"></app-navbar>
 
   <main class="flex-grow pt-24 px-4 sm:px-6 lg:px-8 w-full">
     <div class="max-w-5xl mx-auto mb-8">
@@ -61,7 +60,7 @@
           class="aspect-[3/4] rounded-xl overflow-hidden shadow-2xl border border-white/10 relative group"
         >
           <img
-            [src]="personagem.image"
+            [src]="personagem.gif || personagem.image"
             [alt]="personagem.name"
             class="w-full h-full object-cover"
           />

@@ -37,6 +37,7 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
 
   // === CONTROLE DE INTERFACE ===
   favoritosCount: number = 0;
+character: any;
 
   // === AUTENTICAÇÃO ===
   get usuarioLogado(): boolean {

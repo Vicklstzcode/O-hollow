@@ -48,6 +48,7 @@ throw new Error('Method not implemented.');
   // === DADOS ===
   todosPersonagens: Character[] = [];
   personagensFiltrados: Character[] = [];
+  groupedCharacters = new Map<string, Character[]>();
   favoritos: number[] = [];
   
   // === FILTROS ===
@@ -177,6 +178,10 @@ throw new Error('Method not implemented.');
       }
 
       this.personagensFiltrados = personagens;
+      
+      // Se o filtro for 'Todos', agrupa os personagens para a exibição especial
+      if (this.filtroAtual === 'Todos') this.groupCharacters(this.personagensFiltrados);
+
       this.filtrandoPersonagens = false; // Esconde o loader
       this.atualizarIcones(); // Atualiza os ícones dos novos cards
     }, 250); // Um delay de 250ms é suficiente para a percepção visual.
@@ -196,6 +201,19 @@ throw new Error('Method not implemented.');
 
   slideAnterior() {
     this.carouselIndex = (this.carouselIndex - 1 + this.carouselItems.length) % this.carouselItems.length;
+  }
+
+  // === LÓGICA DE AGRUPAMENTO ===
+
+  private groupCharacters(characters: Character[]): void {
+    this.groupedCharacters.clear(); // Limpa grupos antigos
+    const sortedCharacters = [...characters].sort((a, b) => a.universe.localeCompare(b.universe));
+    for (const character of sortedCharacters) {
+      if (!this.groupedCharacters.has(character.universe)) {
+        this.groupedCharacters.set(character.universe, []);
+      }
+      this.groupedCharacters.get(character.universe)?.push(character);
+    }
   }
 
   // === LÓGICA DO NÍVEL DE AMEAÇA ===
