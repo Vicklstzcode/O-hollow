@@ -55,6 +55,7 @@ export class CharacterService {
   };
 
   constructor() {
+    localStorage.removeItem(this.CHARACTERS_KEY); // TEMPORARY: Clear localStorage to ensure fresh data load.
     // Ao iniciar o serviço, carrega os dados do localStorage ou usa os dados iniciais
     const storedCharacters = localStorage.getItem(this.CHARACTERS_KEY);
     const initialCharacters = storedCharacters ? JSON.parse(storedCharacters) : CHARACTERS_DATA;
