@@ -108,6 +108,14 @@ character: any;
     }
   }
 
+  getPowerLevelLabel(powerLevel: number): string {
+    if (powerLevel === 100) return 'Quase Onipotente';
+    if (powerLevel >= 95) return 'Nível Ômega';
+    if (powerLevel >= 90) return 'Extremamente Poderoso';
+    if (powerLevel >= 80) return 'Muito Poderoso';
+    return 'Poderoso';
+  }
+
   mostrarToast(mensagem: string, tipo: 'success' | 'info') {
     this.mensagemToast = mensagem;
     this.tipoToast = tipo;
