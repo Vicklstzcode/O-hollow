@@ -4,7 +4,9 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms'; // Importado para o ngModel
 import { CharacterService, Character } from '../../services/character.service';
 import { AuthService } from '../../services/auth.service';
+import { AchievementService } from '../../services/achievement.service'; // Importe o novo serviço
 import { NavbarComponent } from "../home/navbar.component"; // Importado para verificar login
+import { PowerGridComponent } from '../../components/power-grid/power-grid.component';
 
 // Declaração para usar ícones Lucide
 declare var lucide: any;
@@ -12,7 +14,7 @@ declare var lucide: any;
 @Component({
   selector: 'app-detalhes',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule, NavbarComponent],
+  imports: [CommonModule, RouterLink, FormsModule, NavbarComponent, PowerGridComponent],
   templateUrl: './detalhes.component.html',
   styleUrl: './detalhes.component.css'
 })
@@ -20,6 +22,7 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
   
   personagem: Character | undefined;
   ehFavorito: boolean = false;
+  historiaLida: boolean = false;
   
   // Controle de Erro (se o ID não existir)
   encontrado: boolean = true;
@@ -37,7 +40,7 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
 
   // === CONTROLE DE INTERFACE ===
   favoritosCount: number = 0;
-character: any;
+  character: any;
 
   // === AUTENTICAÇÃO ===
   get usuarioLogado(): boolean {
@@ -48,7 +51,8 @@ character: any;
     private route: ActivatedRoute, // Lê a URL
     private characterService: CharacterService, // Busca os dados
     private location: Location, // Serve para o botão "Voltar"
-    private authService: AuthService // Injetado para os comentários
+    private authService: AuthService, // Injetado para os comentários
+    private achievementService: AchievementService // Injetado para as conquistas
   ) {}
 
   ngOnInit() {
@@ -66,6 +70,11 @@ character: any;
           this.carregarComentarios();
           // Carrega a contagem de favoritos para a navbar
           this.favoritosCount = this.characterService.getFavorites().length;
+          
+          // --- GAMIFICATION ---
+          this.achievementService.trackPageVisit(this.personagem.id);
+          // --------------------
+
           // Atualiza os ícones da página
           this.atualizarIcones();
         } else {
@@ -98,6 +107,10 @@ character: any;
       
       // Atualiza a contagem de favoritos para a navbar
       this.favoritosCount = this.characterService.getFavorites().length;
+      
+      // --- GAMIFICATION ---
+      this.achievementService.trackFavorite();
+      // --------------------
       
       // Mostra o Toast (igual ao seu JS)
       if (adicionou) {
@@ -147,6 +160,11 @@ character: any;
     this.characterService.addComment(this.personagem.id, comentario);
     this.novoComentario = ''; // Limpa o campo
     this.carregarComentarios(); // Recarrega a lista de comentários
+    
+    // --- GAMIFICATION ---
+    this.achievementService.trackComment();
+    // --------------------
+
     this.atualizarIcones(); // Garante que ícones de usuário sejam renderizados
   }
 
@@ -176,6 +194,15 @@ character: any;
         this.carregarComentarios();
         this.mostrarToast('Comentário excluído.', 'info');
       }
+    }
+  }
+
+  // --- GAMIFICATION ---
+  marcarHistoriaComoLida() {
+    if (this.personagem) {
+      this.achievementService.trackHistoryRead(this.personagem.id);
+      this.historiaLida = true;
+      this.mostrarToast('História marcada como lida!', 'info');
     }
   }
 }

@@ -1,0 +1,40 @@
+.achievement-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* 24px */
+  padding: 1.5rem; /* 24px */
+  border-radius: 0.75rem; /* 12px */
+  background-color: rgba(30, 41, 59, 0.5); /* slate-800 com opacidade */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  opacity: 0.5;
+}
+
+.achievement-card .icon-container {
+  flex-shrink: 0;
+  width: 4rem; /* 64px */
+  height: 4rem; /* 64px */
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #94a3b8; /* gray-400 */
+  transition: all 0.3s ease;
+}
+
+.achievement-card.earned {
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.achievement-card.earned .icon-container {
+  background-color: #facc15; /* yellow-400 */
+  color: #1e293b; /* slate-800 */
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.5);
+}
+
+.achievement-card.earned h3 {
+  color: #facc15; /* yellow-400 */
+}

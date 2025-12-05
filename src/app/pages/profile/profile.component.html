@@ -1,0 +1,51 @@
+<app-navbar [favoritesCount]="0"></app-navbar>
+
+<main class="flex-grow pt-24 px-4 sm:px-6 lg:px-8 w-full">
+  <div class="max-w-5xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+      <div>
+        <h1 class="text-4xl font-bold text-white">Meu Perfil</h1>
+        <p class="text-gray-400 mt-1">Veja suas conquistas e progresso.</p>
+      </div>
+      <button (click)="logout()" class="mt-4 md:mt-0 inline-flex items-center gap-2 bg-red-600/20 text-red-300 px-4 py-2 rounded-lg hover:bg-red-600/40 transition-colors">
+        <i data-lucide="log-out" class="w-4 h-4"></i>
+        Sair
+      </button>
+    </div>
+
+    <!-- Achievements Section -->
+    <div class="glass-panel p-8 rounded-2xl animate-fade-in-up">
+      <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+        <i data-lucide="award" class="w-6 h-6 text-yellow-400"></i>
+        Conquistas
+      </h2>
+      
+      <div class="mb-6">
+        <div class="flex justify-between items-center mb-1 text-sm">
+          <span class="font-medium text-gray-300">Progresso</span>
+          <span class="font-mono text-gray-400">{{ earnedCount }} / {{ totalCount }}</span>
+        </div>
+        <div class="w-full bg-white/10 rounded-full h-2.5">
+          <div class="h-2.5 rounded-full bg-yellow-400" [style.width.%]="(earnedCount / totalCount) * 100"></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div *ngFor="let achievement of achievements" class="achievement-card" [class.earned]="achievement.earned">
+          <div class="icon-container">
+            <i [attr.data-lucide]="achievement.icon" class="w-8 h-8"></i>
+          </div>
+          <div class="flex-grow">
+            <h3 class="font-bold text-lg text-white">{{ achievement.name }}</h3>
+            <p class="text-sm text-gray-400">{{ achievement.description }}</p>
+          </div>
+        </div>
+      </div>
+
+       <p *ngIf="earnedCount === 0" class="text-center text-gray-500 mt-8">
+        Continue explorando o site para desbloquear sua primeira conquista!
+      </p>
+
+    </div>
+  </div>
+</main>

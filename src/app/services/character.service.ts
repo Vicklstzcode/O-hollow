@@ -19,6 +19,13 @@ export interface Character {
   affiliations?: string[];
   weaknesses?: string[];
   abilities?: string[];
+  // Power Grid
+  intelligence?: number;
+  strength?: number;
+  speed?: number;
+  durability?: number;
+  energyProjection?: number;
+  fightingSkills?: number;
 }
 
 @Injectable({

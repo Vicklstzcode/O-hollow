@@ -1,0 +1,74 @@
+<div *ngIf="character" class="power-grid-container">
+  <h3 class="font-bold text-lg text-white mb-4 flex items-center gap-2">
+    <i data-lucide="grid-3x3" class="w-4 h-4 text-blue-400"></i>
+    Grid de Poder
+  </h3>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-sm">
+    <!-- Intelligence -->
+    <div class="stat-item">
+      <div class="flex justify-between items-center mb-1">
+        <span class="stat-name">Inteligência</span>
+        <span class="stat-value">{{ character.intelligence || 0 }}/7</span>
+      </div>
+      <div class="stat-bar-track">
+        <div class="stat-bar-fill" [style.width.%]="((character.intelligence || 0) / 7) * 100"></div>
+      </div>
+    </div>
+
+    <!-- Strength -->
+    <div class="stat-item">
+      <div class="flex justify-between items-center mb-1">
+        <span class="stat-name">Força</span>
+        <span class="stat-value">{{ character.strength || 0 }}/7</span>
+      </div>
+      <div class="stat-bar-track">
+        <div class="stat-bar-fill" [style.width.%]="((character.strength || 0) / 7) * 100"></div>
+      </div>
+    </div>
+
+    <!-- Speed -->
+    <div class="stat-item">
+      <div class="flex justify-between items-center mb-1">
+        <span class="stat-name">Velocidade</span>
+        <span class="stat-value">{{ character.speed || 0 }}/7</span>
+      </div>
+      <div class="stat-bar-track">
+        <div class="stat-bar-fill" [style.width.%]="((character.speed || 0) / 7) * 100"></div>
+      </div>
+    </div>
+
+    <!-- Durability -->
+    <div class="stat-item">
+      <div class="flex justify-between items-center mb-1">
+        <span class="stat-name">Durabilidade</span>
+        <span class="stat-value">{{ character.durability || 0 }}/7</span>
+      </div>
+      <div class="stat-bar-track">
+        <div class="stat-bar-fill" [style.width.%]="((character.durability || 0) / 7) * 100"></div>
+      </div>
+    </div>
+
+    <!-- Energy Projection -->
+    <div class="stat-item">
+      <div class="flex justify-between items-center mb-1">
+        <span class="stat-name">Projeção de Energia</span>
+        <span class="stat-value">{{ character.energyProjection || 0 }}/7</span>
+      </div>
+      <div class="stat-bar-track">
+        <div class="stat-bar-fill" [style.width.%]="((character.energyProjection || 0) / 7) * 100"></div>
+      </div>
+    </div>
+
+    <!-- Fighting Skills -->
+    <div class="stat-item">
+      <div class="flex justify-between items-center mb-1">
+        <span class="stat-name">Habilidade de Luta</span>
+        <span class="stat-value">{{ character.fightingSkills || 0 }}/7</span>
+      </div>
+      <div class="stat-bar-track">
+        <div class="stat-bar-fill" [style.width.%]="((character.fightingSkills || 0) / 7) * 100"></div>
+      </div>
+    </div>
+  </div>
+</div>
