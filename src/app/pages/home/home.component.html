@@ -11,6 +11,14 @@
       >
         Login
       </a>
+      <button
+        *ngIf="usuarioLogado"
+        routerLink="/characters/add"
+        class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full text-sm transition-all border border-white/5 cursor-pointer"
+      >
+        <i data-lucide="plus" class="w-4 h-4 mr-1"></i>
+        Adicionar Personagem
+      </button>
       <button *ngIf="usuarioLogado" (click)="sair()"
         class="bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full text-sm transition-all border border-white/5 cursor-pointer"
       >
@@ -340,7 +348,7 @@
           </div>
 
           <!-- Container da Explicação -->
-          <div *ngIf="ameacaVotada && explicacao" class="mt-6 text-left max-w-xl mx-auto bg-white/5 p-4 rounded-lg border border-white/10 animate-fade-in-up">
+          <div *ngIf="ameacaVotada && explicacao" class="mt-6 text-left max-w-xl mx-auto bg-white/5 p-4 rounded-lg border border-white/10 animate-fade-in-up !z-[9999] !fixed !bottom-0 !left-0 !right-0 bg-red-500">
             <p class="text-sm text-gray-300" [innerHTML]="explicacao"></p>
           </div>
 
@@ -355,7 +363,7 @@
       </div>
     </div>
 
-    <!-- ======================= CONEXÕES DO MULTIVERSO ======================= -->
+    <!-- ======================= CONEXÕES DO MULTIVERSO (NOVA VERSÃO) ======================= -->
     <div
       id="multiverse-connections"
       class="mb-20 p-1 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600"
@@ -365,7 +373,7 @@
           class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"
         ></div>
 
-        <div *ngIf="personagemCentral" class="relative z-10 max-w-4xl mx-auto">
+        <div class="relative z-10 max-w-5xl mx-auto">
           <h2 class="text-3xl font-black italic mb-2 text-white">
             CONEXÕES DO MULTIVERSO
           </h2>
@@ -373,60 +381,77 @@
             Explore as relações e conexões dos personagens.
           </p>
 
-          <div
-            class="flex flex-col md:flex-row items-center justify-between gap-8"
-          >
-            <!-- Personagens Conectados (Esquerda) -->
-            <div class="flex flex-col gap-6 w-full md:w-1/3">
-              <div
-                *ngFor="let char of personagensConectados.slice(0, 2); trackBy: trackByPersonagemId"
-                (click)="mudarPersonagemCentral(char.id!)"
-                (mouseenter)="mostrarRelacao(char.relacao)"
-                (mouseleave)="limparRelacao()"
-                class="flex items-center gap-4 text-right cursor-pointer group"
-              >
-                <div class="order-2 md:order-1">
-                    <h4 class="text-md font-bold text-gray-100 group-hover:text-white transition-colors">{{ char.name }}</h4>
-                </div>
-                <img
-                  [src]="char.image"
-                  class="w-16 h-16 rounded-full object-cover border-2 border-white/20 group-hover:border-purple-400 transition-all shrink-0 order-1 md:order-2"
-                />
-              </div>
-            </div>
-
+          <div *ngIf="personagemCentral" class="flex flex-col items-center gap-8">
+            
             <!-- Personagem Central -->
-            <div class="text-center w-full md:w-auto order-first md:order-none">
+            <div class="text-center order-2">
               <img
                 [src]="personagemCentral.image"
-                class="w-40 h-40 md:w-56 md:h-56 object-cover rounded-full mx-auto mb-4 border-4 border-purple-500 shadow-[0_0_40px_rgba(139,92,246,0.6)]"
+                [alt]="personagemCentral.name"
+                class="w-40 h-40 md:w-48 md:h-48 object-cover rounded-full mx-auto mb-4 border-4 border-purple-500 shadow-[0_0_40px_rgba(139,92,246,0.6)] transition-all"
               />
               <h3 class="text-2xl font-bold text-white">
                 {{ personagemCentral.name }}
               </h3>
-               <!-- New explanation area -->
-              <div class="h-10 mt-2 px-4">
-                <p *ngIf="relacaoEmDestaque" class="text-purple-300 text-sm italic animate-fade-in-up">
-                    {{ relacaoEmDestaque }}
-                </p>
-              </div>
+              <p class="text-gray-400 text-sm">{{ personagemCentral.alias }}</p>
             </div>
 
-            <!-- Personagens Conectados (Direita) -->
-            <div class="flex flex-col gap-6 w-full md:w-1/3">
-              <div
-                *ngFor="let char of personagensConectados.slice(2, 4); trackBy: trackByPersonagemId"
-                (click)="mudarPersonagemCentral(char.id!)"
-                (mouseenter)="mostrarRelacao(char.relacao)"
-                (mouseleave)="limparRelacao()"
-                class="flex items-center gap-4 text-left cursor-pointer group"
+            <!-- Linhas de Conexão (SVG) - Decorativo -->
+            <div class="order-1 w-full h-16 md:h-24 relative -mb-8">
+                <svg width="100%" height="100%" viewBox="0 0 1000 100" preserveAspectRatio="none">
+                    <!-- Linhas para os personagens conectados -->
+                    <path d="M 100 80 C 200 0, 300 0, 500 0" stroke="rgba(139, 92, 246, 0.3)" stroke-width="2" fill="none" />
+                    <path d="M 300 80 C 400 0, 450 0, 500 0" stroke="rgba(139, 92, 246, 0.3)" stroke-width="2" fill="none" />
+                    <path d="M 700 80 C 550 0, 600 0, 500 0" stroke="rgba(139, 92, 246, 0.3)" stroke-width="2" fill="none" />
+                    <path d="M 900 80 C 800 0, 700 0, 500 0" stroke="rgba(139, 92, 246, 0.3)" stroke-width="2" fill="none" />
+                </svg>
+            </div>
+
+            <!-- Personagens Conectados -->
+            <div class="w-full order-3 min-h-[180px]">
+              <!-- Estado de Carregamento -->
+              <div *ngIf="carregandoConexoes" class="flex justify-center items-center h-full">
+                <i data-lucide="loader-2" class="w-8 h-8 text-purple-400 animate-spin"></i>
+              </div>
+
+              <!-- Container dos Personagens -->
+              <div 
+                *ngIf="!carregandoConexoes" 
+                class="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8 justify-items-center"
               >
-                <img
-                  [src]="char.image"
-                  class="w-16 h-16 rounded-full object-cover border-2 border-white/20 group-hover:border-purple-400 transition-all shrink-0"
-                />
-                <div>
-                    <h4 class="text-md font-bold text-gray-100 group-hover:text-white transition-colors">{{ char.name }}</h4>
+                <div
+                  *ngFor="let char of personagensConectados; trackBy: trackByPersonagemId"
+                  (click)="mudarPersonagemCentral(char.id!)"
+                  role="button"
+                  tabindex="0"
+                  [attr.aria-label]="'Ver conexões de ' + char.name"
+                  class="flex flex-col items-center gap-2 text-center cursor-pointer group focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-lg p-2 transition-all transform hover:-translate-y-2"
+                >
+                  <img
+                    [src]="char.image"
+                    [alt]="char.name"
+                    class="w-20 h-20 rounded-full object-cover border-2 border-white/20 group-hover:border-purple-400 transition-all"
+                  />
+                  <div>
+                    <h4 class="text-sm font-bold text-gray-100 group-hover:text-white transition-colors">
+                      {{ char.name }}
+                    </h4>
+                    <!-- Relação visível permanentemente -->
+                    <p class="text-xs text-purple-300 italic">
+                      {{ char.relacao }}
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Mensagem se não houver conexões -->
+                <div *ngIf="personagensConectados.length === 0" class="col-span-full text-center text-gray-500 py-8">
+                  Nenhuma conexão encontrada para este personagem.
+                  <button
+                    (click)="pickRandomCentralCharacter()"
+                    class="mt-4 px-6 py-2 bg-purple-600 hover:bg-purple-700 rounded-full text-sm font-bold transition-colors"
+                  >
+                    Tentar outro personagem
+                  </button>
                 </div>
               </div>
             </div>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // Added Router
 import { CharacterService, Character } from '../../services/character.service';
 
 @Component({
@@ -18,7 +18,8 @@ export class UniversoComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private characterService: CharacterService,
-    private location: Location
+    private location: Location,
+    private router: Router // Injected Router
   ) {}
 
   ngOnInit() {
@@ -33,9 +34,17 @@ export class UniversoComponent implements OnInit {
   carregarDados(nome: string) {
     this.universoInfo = this.characterService.getUniverseInfo(nome);
     this.personagens = this.characterService.getCharactersByUniverse(nome);
+    console.log(`UniversoComponent: Personagens carregados para '${nome}'. Quantidade: ${this.personagens.length}`);
+    if (this.personagens.length === 0) {
+      console.log(`UniversoComponent: NENHUM personagem encontrado para '${nome}'.`);
+    }
   }
 
   voltarPagina() {
     this.location.back();
+  }
+
+  goToHome() {
+    this.router.navigate(['/home']);
   }
 }

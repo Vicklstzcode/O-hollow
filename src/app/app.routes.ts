@@ -8,6 +8,7 @@ import { DetalhesComponent } from './pages/detalhes/detalhes.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { UniversoComponent } from './pages/universo/universo.component';
 import { PerfilComponent } from './pages/perfil/perfil.component';
+import { CharacterFormComponent } from './pages/character-form/character-form.component'; // Import the new component
 
 export const routes: Routes = [
     // Rota padrão redireciona para login
@@ -46,6 +47,17 @@ export const routes: Routes = [
     {
       path: 'perfil', 
       component: PerfilComponent, 
+      canActivate: [authGuard] 
+    },
+    // New routes for character management
+    { 
+      path: 'characters/add', 
+      component: CharacterFormComponent, 
+      canActivate: [authGuard] 
+    },
+    { 
+      path: 'characters/edit/:id', 
+      component: CharacterFormComponent, 
       canActivate: [authGuard] 
     },
 

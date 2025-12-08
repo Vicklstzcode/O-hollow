@@ -61,6 +61,97 @@ export class CharacterService {
     }
   };
 
+  // Mapa de conexões movido para o serviço
+  private mapaConexoes: { [key: number]: { id: number, relacao: string }[] } = {
+    // Feiticeira Escarlate (1)
+    1: [
+      { id: 2, relacao: 'Aliado nos Vingadores e mestre das artes místicas.' },
+      { id: 4, relacao: 'Mentora sombria que a manipulou em Westview.' },
+      { id: 5, relacao: 'Seu filho, uma poderosa entidade mágica.' },
+      { id: 20, relacao: 'Ambas são hospedeiras de forças cósmicas (Caos e Fênix).' }
+    ],
+    // Doutor Estranho (2)
+    2: [
+      { id: 1, relacao: 'Aliada e adversária na manipulação da realidade.' },
+      { id: 11, relacao: 'Colega e rival nas artes do ocultismo.' },
+      { id: 13, relacao: 'Enfrentou suas ilusões e trapaças interdimensionais.' },
+      { id: 16, relacao: 'Ambos protegem a realidade de ameaças místicas e infernais.'}
+    ],
+    // Ravena (21)
+    21: [
+        { id: 19, relacao: 'Ambos usam traumas e dimensões sombrias para atacar.' },
+        { id: 16, relacao: 'Compartilham uma herança infernal e lutam contra o destino.' },
+        { id: 1, relacao: 'Seu poder empático reflete a instabilidade emocional de Wanda.' },
+        { id: 11, relacao: 'Constantine e Ravena são pilares da Liga da Justiça Sombria.' }
+    ],
+    // Loki (13)
+    13: [
+        { id: 2, relacao: 'Foi aprisionado e confrontado pelo Mago Supremo.' },
+        { id: 1, relacao: 'Ambos são mestres em magia e manipulação de mentes.' },
+        { id: 10, relacao: 'Como Rand, Loki é uma figura destinada a causar caos e transformação.' },
+        { id: 4, relacao: 'Ambos são feiticeiros antigos com sede de poder e conhecimento.'}
+    ],
+    // Agatha Harkness (4)
+    4: [
+      { id: 1, relacao: 'Tentou roubar a Magia do Caos de Wanda.'},
+      { id: 7, relacao: 'Selene e Agatha são duas das mais antigas e poderosas feiticeiras.'},
+      { id: 16, relacao: 'Ambas são bruxas experientes que compreendem o custo do poder.'},
+      { id: 2, relacao: 'O conhecimento de Agatha sobre magia negra é uma ameaça que Strange monitora.'}
+    ],
+    // Bonnie Bennett (3)
+    3: [
+      { id: 21, relacao: 'Aliada nas artes arcanas e controle de forças sombrias.' },
+      { id: 16, relacao: 'Compartilha o caminho da bruxaria e desafios sobrenaturais.' },
+      { id: 1, relacao: 'Similaridades na manipulação de magia poderosa e destino trágico.' }
+    ],
+    // Selene Gallio (7)
+    7: [
+      { id: 4, relacao: 'Antigas e poderosas bruxas, ambas com vasta experiência em magia negra.' },
+      { id: 16, relacao: 'Ambas bruxas que extraem poder de fontes sombrias ou infernais.' }
+    ],
+    // Storm (8)
+    8: [
+      { id: 20, relacao: 'Amigas e líderes dos X-Men, ambas com poderes de nível ômega.' },
+      { id: 1, relacao: 'Ambas controlam forças elementais e possuem grande poder destrutivo.' }
+    ],
+    // Moiraine Damodred (9)
+    9: [
+      { id: 10, relacao: 'Mentora e guia do Dragão Renascido em sua jornada.' }
+    ],
+    // Rand al\'Thor (10)
+    10: [
+      { id: 9, relacao: 'O Dragão Renascido, guiado por Moiraine.' },
+      { id: 1, relacao: 'Ambos com grande poder de manipular a realidade e o destino.' }
+    ],
+    // John Constantine (11)
+    11: [
+      { id: 2, relacao: 'Colega e rival nas artes do ocultismo e magia sombria.' },
+      { id: 21, relacao: 'Ambos são pilares da Liga da Justiça Sombria, lidando com ameaças místicas.' }
+    ],
+    // Sabrina Spellman (16)
+    16: [
+      { id: 2, relacao: 'Ambos protegem a realidade de ameaças místicas e infernais.' },
+      { id: 3, relacao: 'Compartilha o caminho da bruxaria e desafios sobrenaturais.' },
+      { id: 7, relacao: 'Ambas bruxas que extraem poder de fontes sombrias ou infernais.' },
+      { id: 21, relacao: 'Compartilham uma herança infernal e lutam contra o destino.' }
+    ],
+    // Eleven (17)
+    17: [
+      { id: 19, relacao: 'Archenimigos com poderes psíquicos do Mundo Invertido.' },
+      { id: 1, relacao: 'Ambas com grandes poderes que afetam a realidade, e traumas profundos.' }
+    ],
+    // Vecna (19)
+    19: [
+      { id: 17, relacao: 'Archenimigos com poderes psíquicos do Mundo Invertido.' },
+      { id: 21, relacao: 'Ambos usam traumas e dimensões sombrias para atacar.' }
+    ],
+    // Fênix (20)
+    20: [
+      { id: 1, relacao: 'Ambas são hospedeiras de forças cósmicas (Caos e Fênix).' },
+      { id: 8, relacao: 'Amigas e líderes dos X-Men, ambas com poderes de nível ômega.' }
+    ]
+  };
+
   constructor() {
     localStorage.removeItem(this.CHARACTERS_KEY); // TEMPORARY: Clear localStorage to ensure fresh data load.
     // Ao iniciar o serviço, carrega os dados do localStorage ou usa os dados iniciais
@@ -84,6 +175,10 @@ export class CharacterService {
 
   getCharacterById(id: number): Character | undefined {
     return this.getCharacters().find(c => c.id === id);
+  }
+
+  getConnectionsFor(id: number): { id: number, relacao: string }[] {
+    return this.mapaConexoes[id] || [];
   }
 
   getCharactersByUniverse(universeName: string): Character[] {
@@ -115,6 +210,28 @@ export class CharacterService {
     const updatedCharacters = [...currentCharacters, newChar];
     
     this.updateCharacters(updatedCharacters);
+  }
+
+  updateCharacter(id: number, updatedChar: Character) {
+    const currentCharacters = this.getCharacters();
+    const index = currentCharacters.findIndex(c => c.id === id);
+    if (index > -1) {
+      const characters = [...currentCharacters];
+      characters[index] = { ...updatedChar, id: id }; // Ensure ID remains the same
+      this.updateCharacters(characters);
+    } else {
+      console.warn(`Character with ID ${id} not found for update.`);
+    }
+  }
+
+  deleteCharacter(id: number) {
+    const currentCharacters = this.getCharacters();
+    const updatedCharacters = currentCharacters.filter(c => c.id !== id);
+    if (updatedCharacters.length < currentCharacters.length) {
+      this.updateCharacters(updatedCharacters);
+    } else {
+      console.warn(`Character with ID ${id} not found for deletion.`);
+    }
   }
 
   // Método privado para atualizar o Subject e o localStorage

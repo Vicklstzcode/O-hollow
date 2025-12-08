@@ -79,45 +79,7 @@ throw new Error('Method not implemented.');
   // === CONEXÕES DO MULTIVERSO ===
   personagemCentral: Character | undefined;
   personagensConectados: (Character & { relacao?: string })[] = [];
-  relacaoEmDestaque: string | null = null;
-  // Mapa de conexões (simulado, idealmente viria do serviço/API)
-  mapaConexoes: { [key: number]: { id: number, relacao: string }[] } = {
-    // Feiticeira Escarlate (1)
-    1: [
-      { id: 2, relacao: 'Aliado nos Vingadores e mestre das artes místicas.' },
-      { id: 4, relacao: 'Mentora sombria que a manipulou em Westview.' },
-      { id: 5, relacao: 'Seu filho, uma poderosa entidade mágica.' },
-      { id: 20, relacao: 'Ambas são hospedeiras de forças cósmicas (Caos e Fênix).' }
-    ],
-    // Doutor Estranho (2)
-    2: [
-      { id: 1, relacao: 'Aliada e adversária na manipulação da realidade.' },
-      { id: 11, relacao: 'Colega e rival nas artes do ocultismo.' },
-      { id: 13, relacao: 'Enfrentou suas ilusões e trapaças interdimensionais.' },
-      { id: 16, relacao: 'Ambos protegem a realidade de ameaças místicas e infernais.'}
-    ],
-    // Ravena (21)
-    21: [
-        { id: 19, relacao: 'Ambos usam traumas e dimensões sombrias para atacar.' },
-        { id: 16, relacao: 'Compartilham uma herança infernal e lutam contra o destino.' },
-        { id: 1, relacao: 'Seu poder empático reflete a instabilidade emocional de Wanda.' },
-        { id: 11, relacao: 'Constantine e Ravena são pilares da Liga da Justiça Sombria.' }
-    ],
-    // Loki (13)
-    13: [
-        { id: 2, relacao: 'Foi aprisionado e confrontado pelo Mago Supremo.' },
-        { id: 1, relacao: 'Ambos são mestres em magia e manipulação de mentes.' },
-        { id: 10, relacao: 'Como Rand, Loki é uma figura destinada a causar caos e transformação.' },
-        { id: 4, relacao: 'Ambos são feiticeiros antigos com sede de poder e conhecimento.'}
-    ],
-    // Agatha Harkness (4)
-    4: [
-      { id: 1, relacao: 'Tentou roubar a Magia do Caos de Wanda.'},
-      { id: 7, relacao: 'Selene e Agatha são duas das mais antigas e poderosas feiticeiras.'},
-      { id: 16, relacao: 'Ambas são bruxas experientes que compreendem o custo do poder.'},
-      { id: 2, relacao: 'O conhecimento de Agatha sobre magia negra é uma ameaça que Strange monitora.'}
-    ]
-  };
+  carregandoConexoes: boolean = false; // Adiciona um estado de carregamento
 
   constructor(
     private characterService: CharacterService,
@@ -341,46 +303,46 @@ throw new Error('Method not implemented.');
 
   // === LÓGICA DAS CONEXÕES DO MULTIVERSO ===
 
+  // Método para selecionar um personagem central aleatório
+  pickRandomCentralCharacter() {
+    if (this.todosPersonagens.length === 0) return;
+    const randomIndex = Math.floor(Math.random() * this.todosPersonagens.length);
+    const randomCharacterId = this.todosPersonagens[randomIndex].id;
+    this.mudarPersonagemCentral(randomCharacterId);
+  }
+
   mudarPersonagemCentral(id: number) {
-    // Previne re-renderização desnecessária se o mesmo personagem for clicado
-    if (this.personagemCentral?.id === id) return;
-
-    const novoCentral = this.todosPersonagens.find(p => p.id === id);
-    if (!novoCentral) return;
-
-    this.personagemCentral = novoCentral;
-    this.carregarConexoes(id);
-    this.limparRelacao(); // Limpa a relação em destaque ao trocar de personagem
-    this.atualizarIcones();
-  }
-
-  mostrarRelacao(relacao: string | undefined) {
-    if (relacao) this.relacaoEmDestaque = relacao;
-  }
-
-  limparRelacao() {
-    this.relacaoEmDestaque = null;
+    // Previne re-renderização e cliques enquanto carrega
+    if (this.personagemCentral?.id === id || this.carregandoConexoes) return;
+  
+    this.carregandoConexoes = true;
+    this.personagensConectados = []; // Limpa as conexões antigas imediatamente
+    
+    // Encontra o novo personagem central e o define
+    this.personagemCentral = this.todosPersonagens.find(p => p.id === id);
+  
+    // Timeout para dar uma sensação de transição e evitar flickers
+    setTimeout(() => {
+      if (this.personagemCentral) {
+        this.carregarConexoes(this.personagemCentral.id);
+      } else {
+        // Se o personagem central não for encontrado (ID inválido), seleciona um aleatório
+        this.pickRandomCentralCharacter();
+      }
+      this.carregandoConexoes = false;
+      this.atualizarIcones();
+    }, 500); // Aumentado para 500ms para uma transição mais suave
   }
 
   carregarConexoes(id: number) {
-    const conexoes = this.mapaConexoes[id] || [];
+    const conexoes = this.characterService.getConnectionsFor(id);
+    
     // Mapeia as conexões para incluir a relação no objeto do personagem
     this.personagensConectados = conexoes.map(conexao => {
       const personagem = this.todosPersonagens.find(p => p.id === conexao.id);
       // Retorna uma união do objeto do personagem com a propriedade relacao
       return { ...personagem!, relacao: conexao.relacao };
-    }).filter(p => p.id); // Filtra caso algum personagem não seja encontrado no array principal
-
-    // Garante que sempre tenhamos 4 conexões para exibir, preenchendo com aleatórios se necessário
-    // Personagens aleatórios não terão a propriedade 'relacao'
-    while (this.personagensConectados.length < 4 && this.todosPersonagens.length > this.personagensConectados.length + 1) {
-      const randomIndex = Math.floor(Math.random() * this.todosPersonagens.length);
-      const randomChar = this.todosPersonagens[randomIndex];
-      // Garante que o personagem aleatório não seja o personagem central nem já esteja na lista
-      if (randomChar.id !== id && !this.personagensConectados.some(p => p.id === randomChar.id)) {
-        this.personagensConectados.push(randomChar);
-      }
-    }
+    }).filter(p => p && p.id); // Filtra caso algum personagem não seja encontrado
   }
 
   // === AÇÕES ===

@@ -104,6 +104,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private renderizarGraficos() {
+    console.log('DashboardComponent: renderizarGraficos called. Type of Chart:', typeof Chart);
     if (!this.allCharacters.length || typeof Chart === 'undefined') return;
 
     // Destrói gráficos antigos antes de renderizar novos

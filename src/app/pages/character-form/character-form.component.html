@@ -1,0 +1,176 @@
+<div class="min-h-screen relative flex flex-col">
+  <app-navbar>
+    <div navbar-actions>
+      <button class="btn-back hidden md:flex" (click)="navigateToDashboard()">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+        Voltar
+      </button>
+    </div>
+  </app-navbar>
+
+  <main class="flex-grow pt-24 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto pb-12 w-full">
+    <div class="header-section">
+      <div class="header-icon-wrapper">
+        <i data-lucide="user-plus" class="w-8 h-8 text-white"></i>
+      </div>
+      <div>
+        <h1 class="header-title">{{ isEditing ? 'Editar Personagem' : 'Adicionar Novo Personagem' }}</h1>
+        <p class="header-subtitle">Preencha os detalhes para registrar ou atualizar um personagem.</p>
+      </div>
+    </div>
+
+    <div class="bg-gray-800 rounded-lg shadow-lg p-6 md:p-8">
+      <form [formGroup]="characterForm" (ngSubmit)="onSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Basic Info -->
+        <div class="md:col-span-2 form-section">
+          <h3 class="form-section-title">Informações Básicas</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="form-group">
+              <label for="name" class="form-label">Nome Completo</label>
+              <input id="name" type="text" formControlName="name" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200" placeholder="Ex: Wanda Maximoff">
+              <div *ngIf="characterForm.get('name')?.invalid && characterForm.get('name')?.touched" class="text-red-400 text-sm mt-1">
+                Nome é obrigatório.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="alias" class="form-label">Codinome / Alias</label>
+              <input id="alias" type="text" formControlName="alias" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200" placeholder="Ex: Feiticeira Escarlate">
+            </div>
+            <div class="form-group">
+              <label for="universe" class="form-label">Universo</label>
+              <select id="universe" formControlName="universe" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200" style="background-color: #1f2937;">
+                <option value="" disabled>Selecione um universo</option>
+                <option *ngFor="let universe of universes" [value]="universe">{{ universe }}</option>
+              </select>
+              <div *ngIf="characterForm.get('universe')?.invalid && characterForm.get('universe')?.touched" class="text-red-400 text-sm mt-1">
+                Universo é obrigatório.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="type" class="form-label">Tipo</label>
+              <select id="type" formControlName="type" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200" style="background-color: #1f2937;">
+                <option value="" disabled>Selecione um tipo</option>
+                <option *ngFor="let type of types" [value]="type">{{ type }}</option>
+              </select>
+              <div *ngIf="characterForm.get('type')?.invalid && characterForm.get('type')?.touched" class="text-red-400 text-sm mt-1">
+                Tipo é obrigatório.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="power" class="form-label">Poder Principal</label>
+              <input id="power" type="text" formControlName="power" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200" placeholder="Ex: Magia do Caos">
+              <div *ngIf="characterForm.get('power')?.invalid && characterForm.get('power')?.touched" class="text-red-400 text-sm mt-1">
+                Poder é obrigatório.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="powerLevel" class="form-label">Nível de Poder (0-100)</label>
+              <input id="powerLevel" type="number" formControlName="powerLevel" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200" placeholder="Ex: 98">
+              <div *ngIf="characterForm.get('powerLevel')?.invalid && characterForm.get('powerLevel')?.touched" class="text-red-400 text-sm mt-1">
+                Nível de Poder é obrigatório e deve ser entre 0 e 100.
+              </div>
+            </div>
+            <div class="form-group md:col-span-2">
+              <label for="image" class="form-label">URL da Imagem de Perfil</label>
+              <input id="image" type="text" formControlName="image" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200" placeholder="Ex: public/imagens/Ww.jpg">
+              <div *ngIf="characterForm.get('image')?.invalid && characterForm.get('image')?.touched" class="text-red-400 text-sm mt-1">
+                URL da Imagem é obrigatória.
+              </div>
+            </div>
+            <div class="form-group md:col-span-2">
+              <label for="gif" class="form-label">URL do GIF (Opcional)</label>
+              <input id="gif" type="text" formControlName="gif" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200" placeholder="Ex: assets/wanda.gif.gif.gif">
+            </div>
+            <div class="form-group">
+              <label for="color" class="form-label">Cor Principal (Hex)</label>
+              <input id="color" type="color" formControlName="color" class="block w-full h-10 p-1 border border-white/10 rounded-xl leading-5 bg-white/5 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200">
+            </div>
+            <div class="form-group">
+              <label for="symbol" class="form-label">Símbolo (Opcional)</label>
+              <input id="symbol" type="text" formControlName="symbol" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200" placeholder="Ex: ᱬ">
+            </div>
+            <div class="form-group md:col-span-2">
+              <label for="history" class="form-label">História / Biografia</label>
+              <textarea id="history" formControlName="history" rows="4" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200 resize-y" placeholder="Descreva a história do personagem..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Power Grid -->
+        <div class="md:col-span-2 form-section">
+          <h3 class="form-section-title">Atributos (Power Grid)</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="form-group">
+              <label for="intelligence" class="form-label">Inteligência (0-7)</label>
+              <input id="intelligence" type="number" formControlName="intelligence" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200">
+              <div *ngIf="characterForm.get('intelligence')?.invalid && characterForm.get('intelligence')?.touched" class="text-red-400 text-sm mt-1">
+                Valor deve ser entre 0 e 7.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="strength" class="form-label">Força (0-7)</label>
+              <input id="strength" type="number" formControlName="strength" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200">
+              <div *ngIf="characterForm.get('strength')?.invalid && characterForm.get('strength')?.touched" class="text-red-400 text-sm mt-1">
+                Valor deve ser entre 0 e 7.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="speed" class="form-label">Velocidade (0-7)</label>
+              <input id="speed" type="number" formControlName="speed" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200">
+              <div *ngIf="characterForm.get('speed')?.invalid && characterForm.get('speed')?.touched" class="text-red-400 text-sm mt-1">
+                Valor deve ser entre 0 e 7.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="durability" class="form-label">Durabilidade (0-7)</label>
+              <input id="durability" type="number" formControlName="durability" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200">
+              <div *ngIf="characterForm.get('durability')?.invalid && characterForm.get('durability')?.touched" class="text-red-400 text-sm mt-1">
+                Valor deve ser entre 0 e 7.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="energyProjection" class="form-label">Projeção de Energia (0-7)</label>
+              <input id="energyProjection" type="number" formControlName="energyProjection" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200">
+              <div *ngIf="characterForm.get('energyProjection')?.invalid && characterForm.get('energyProjection')?.touched" class="text-red-400 text-sm mt-1">
+                Valor deve ser entre 0 e 7.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="fightingSkills" class="form-label">Habilidades de Luta (0-7)</label>
+              <input id="fightingSkills" type="number" formControlName="fightingSkills" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200">
+              <div *ngIf="characterForm.get('fightingSkills')?.invalid && characterForm.get('fightingSkills')?.touched" class="text-red-400 text-sm mt-1">
+                Valor deve ser entre 0 e 7.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Array Fields -->
+        <div class="md:col-span-2 form-section">
+          <h3 class="form-section-title">Informações Adicionais</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="form-group">
+              <label for="affiliations" class="form-label">Afiliações (separar por vírgula)</label>
+              <input id="affiliations" type="text" formControlName="affiliations" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200" placeholder="Ex: Vingadores, Illuminati">
+            </div>
+            <div class="form-group">
+              <label for="weaknesses" class="form-label">Fraquezas (separar por vírgula)</label>
+              <input id="weaknesses" type="text" formControlName="weaknesses" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200" placeholder="Ex: Claustrofobia, Instabilidade Emocional">
+            </div>
+            <div class="form-group">
+              <label for="abilities" class="form-label">Habilidades (separar por vírgula)</label>
+              <input id="abilities" type="text" formControlName="abilities" class="block w-full px-4 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-white placeholder-gray-500 focus:outline-none focus:bg-white/10 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200" placeholder="Ex: Telecinese, Voo">
+            </div>
+          </div>
+        </div>
+        
+        <div class="md:col-span-2 flex justify-end mt-8">
+          <button type="submit" class="btn-primary" [disabled]="characterForm.invalid">
+            <i data-lucide="save" class="w-4 h-4 mr-2"></i>
+            {{ isEditing ? 'Salvar Alterações' : 'Adicionar Personagem' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
