@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { CharacterService, Character } from '../../services/character.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavbarComponent } from "../home/navbar.component";
+import { MetadataService } from '../../services/metadata.service'; // Import MetadataService
 
 @Component({
   selector: 'app-character-form',
@@ -17,16 +18,17 @@ export class CharacterFormComponent implements OnInit {
   isEditing: boolean = false;
   characterId: number | null = null;
   
-  // Static data for categories to match existing character data
-  universes: string[] = ['Marvel', 'DC', 'TVDU', 'A Roda do Tempo', 'O Mundo Sombrio de Sabrina', 'Stranger Things'];
-  types: string[] = ['Magic', 'Cosmic', 'Mutant', 'Psychic'];
-  powers: string[] = ['Magia do Caos', 'Artes Místicas', 'Magia Ancestral', 'Magia Negra', 'Magia e Eletrocinese', 'Onipotência', 'Absorção de Vida', 'Controle Climático', 'Canalizar o Poder Único (Saidar)', 'Canalizar o Poder Único (Saidin)', 'Ocultismo e Magia Arcana', 'Magia Asgardiana e Ilusão', 'Magia Infernal e Celestial', 'Telecinese e Poderes Psiônicos', 'Poderes Psiônicos do Mundo Invertido', 'Força Fênix', 'Empatia Sombria e Magia Arcana'];
+  // Dynamic data for categories
+  universes: string[] = [];
+  types: string[] = [];
+  powers: string[] = [];
 
   constructor(
     private fb: FormBuilder,
     private characterService: CharacterService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private metadataService: MetadataService // Inject MetadataService
   ) {
     this.characterForm = this.fb.group({
       id: [null],
@@ -54,6 +56,11 @@ export class CharacterFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // Fetch dynamic data from MetadataService
+    this.metadataService.getUniverses().subscribe(data => this.universes = data);
+    this.metadataService.getTypes().subscribe(data => this.types = data);
+    this.metadataService.getPowers().subscribe(data => this.powers = data);
+
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
