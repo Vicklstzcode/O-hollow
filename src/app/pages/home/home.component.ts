@@ -72,16 +72,51 @@ throw new Error('Method not implemented.');
     { id: 4, nome: 'Cósmico', cor: '#8b5cf6' },
     { id: 5, nome: 'Divindade', cor: '#fde047' },
   ];
+  votoUsuario: number | null = null;
+  acertou: boolean | null = null;
+  explicacao: string = '';
   
   // === CONEXÕES DO MULTIVERSO ===
   personagemCentral: Character | undefined;
-  personagensConectados: Character[] = [];
+  personagensConectados: (Character & { relacao?: string })[] = [];
+  relacaoEmDestaque: string | null = null;
   // Mapa de conexões (simulado, idealmente viria do serviço/API)
-  mapaConexoes: { [key: number]: number[] } = {
-    1: [2, 3, 5, 10], // Dr. Estranho -> Wanda, Strange Supremo, Clea, Homem-Aranha
-    2: [1, 7, 8, 4],  // Wanda -> Dr. Estranho, Visão, Magneto, Strange Supremo
-    5: [1, 6, 9],     // Clea -> Dr. Estranho, Dormammu, Umar
-    10: [1, 11, 12],  // Homem-Aranha -> Dr. Estranho, Duende Verde, Dr. Octopus
+  mapaConexoes: { [key: number]: { id: number, relacao: string }[] } = {
+    // Feiticeira Escarlate (1)
+    1: [
+      { id: 2, relacao: 'Aliado nos Vingadores e mestre das artes místicas.' },
+      { id: 4, relacao: 'Mentora sombria que a manipulou em Westview.' },
+      { id: 5, relacao: 'Seu filho, uma poderosa entidade mágica.' },
+      { id: 20, relacao: 'Ambas são hospedeiras de forças cósmicas (Caos e Fênix).' }
+    ],
+    // Doutor Estranho (2)
+    2: [
+      { id: 1, relacao: 'Aliada e adversária na manipulação da realidade.' },
+      { id: 11, relacao: 'Colega e rival nas artes do ocultismo.' },
+      { id: 13, relacao: 'Enfrentou suas ilusões e trapaças interdimensionais.' },
+      { id: 16, relacao: 'Ambos protegem a realidade de ameaças místicas e infernais.'}
+    ],
+    // Ravena (21)
+    21: [
+        { id: 19, relacao: 'Ambos usam traumas e dimensões sombrias para atacar.' },
+        { id: 16, relacao: 'Compartilham uma herança infernal e lutam contra o destino.' },
+        { id: 1, relacao: 'Seu poder empático reflete a instabilidade emocional de Wanda.' },
+        { id: 11, relacao: 'Constantine e Ravena são pilares da Liga da Justiça Sombria.' }
+    ],
+    // Loki (13)
+    13: [
+        { id: 2, relacao: 'Foi aprisionado e confrontado pelo Mago Supremo.' },
+        { id: 1, relacao: 'Ambos são mestres em magia e manipulação de mentes.' },
+        { id: 10, relacao: 'Como Rand, Loki é uma figura destinada a causar caos e transformação.' },
+        { id: 4, relacao: 'Ambos são feiticeiros antigos com sede de poder e conhecimento.'}
+    ],
+    // Agatha Harkness (4)
+    4: [
+      { id: 1, relacao: 'Tentou roubar a Magia do Caos de Wanda.'},
+      { id: 7, relacao: 'Selene e Agatha são duas das mais antigas e poderosas feiticeiras.'},
+      { id: 16, relacao: 'Ambas são bruxas experientes que compreendem o custo do poder.'},
+      { id: 2, relacao: 'O conhecimento de Agatha sobre magia negra é uma ameaça que Strange monitora.'}
+    ]
   };
 
   constructor(
@@ -112,7 +147,7 @@ throw new Error('Method not implemented.');
       
       // Inicia as novas seções se ainda não foram iniciadas
       if (!this.personagemAmeaca) this.novoDesafioAmeaca();
-      if (!this.personagemCentral) this.mudarPersonagemCentral(1); // Inicia com Dr. Estranho (ID 1)
+      if (!this.personagemCentral) this.mudarPersonagemCentral(1); // Inicia com Feiticeira Escarlate (ID 1)
 
       this.atualizarIcones();
     });
@@ -140,6 +175,11 @@ throw new Error('Method not implemented.');
     setTimeout(() => {
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }, 100);
+  }
+
+  // Otimização para o *ngFor
+  trackByPersonagemId(index: number, item: Character): number {
+    return item.id;
   }
 
   // === LÓGICA DE FILTROS ===
@@ -222,38 +262,121 @@ throw new Error('Method not implemented.');
     if (this.todosPersonagens.length === 0) return;
     const index = Math.floor(Math.random() * this.todosPersonagens.length);
     this.personagemAmeaca = this.todosPersonagens[index];
+    
+    // Reset state
     this.ameacaVotada = false;
+    this.votoUsuario = null;
+    this.acertou = null;
+    this.explicacao = '';
+
     this.atualizarIcones();
   }
 
   votarAmeaca(nivelId: number) {
-    if (this.ameacaVotada) return;
-    console.log(`Votou no personagem ${this.personagemAmeaca?.id} com nível de ameaça ${nivelId}`);
+    if (this.ameacaVotada || !this.personagemAmeaca) return;
+
+    this.votoUsuario = nivelId;
+    const correctLevelId = this.getThreatLevelId(this.personagemAmeaca.powerLevel);
+    this.acertou = nivelId === correctLevelId;
     this.ameacaVotada = true;
-    // Aqui você poderia salvar o voto em um serviço
+    
+    // Gera a explicação detalhada, agora passando o voto do usuário
+    this.explicacao = this.getExplicacaoAmeaca(this.personagemAmeaca, this.acertou, this.votoUsuario);
+  }
+
+  private getExplicacaoAmeaca(character: Character, acertou: boolean | null, votoUsuario: number | null): string {
+    const correctLevelId = this.getThreatLevelId(character.powerLevel);
+    const correctLevel = this.niveisAmeaca.find(n => n.id === correctLevelId);
+    if (!correctLevel) return 'Nível de ameaça desconhecido.';
+
+    // Helper para gerar uma razão descritiva para uma escolha de nível específica
+    const getDescriptiveReason = (levelId: number, char: Character): string => {
+        switch (levelId) {
+            case 1: // Nível Rua
+                return `ter habilidades focadas em combate urbano ou local, como ${char.abilities?.[0]?.toLowerCase() || 'combate corpo-a-corpo'}`;
+            case 2: // Meta-Humano
+                return `possuir poderes sobre-humanos que representam uma ameaça regional, como ${char.power.toLowerCase() || 'habilidades especiais'}`;
+            case 3: // Planetário
+                return `ter a capacidade de impactar um planeta inteiro, usando habilidades como ${char.abilities?.[1]?.toLowerCase() || 'poderes de grande escala'}`;
+            case 4: // Cósmico
+                return `manipular as forças do universo em escala estelar, podendo até ${char.history ? 'alterar a própria realidade' : 'controlar energias cósmicas'}`;
+            case 5: // Divindade
+                return `ser uma entidade que personifica um conceito fundamental do cosmos, como a própria vida ou a morte`;
+            default:
+                return '';
+        }
+    };
+
+    const correctReason = getDescriptiveReason(correctLevelId, character);
+
+    if (acertou) {
+        return `Correto! O nível de ameaça de ${character.name} é <strong>${correctLevel.nome}</strong>, pois é capaz de ${correctReason}.`;
+    } else {
+        const userLevel = this.niveisAmeaca.find(n => n.id === votoUsuario);
+        // Caso não encontre o nível do usuário (não deve acontecer)
+        if (!userLevel) { 
+            return `Incorreto. A resposta certa é <strong>${correctLevel.nome}</strong>, pois ${character.name} é capaz de ${correctReason}.`;
+        }
+        
+        const userReason = getDescriptiveReason(votoUsuario!, character);
+
+        return `Incorreto. Embora seja compreensível associar ${character.name} ao nível <strong>${userLevel.nome}</strong> por ${userReason}, sua verdadeira classificação é <strong>${correctLevel.nome}</strong>. Isso porque seu poder permite ${correctReason}.`;
+    }
+  }
+
+
+  public getThreatLevelId(powerLevel: number): number {
+    if (powerLevel === 100) {
+        return 5; // Divindade
+    } else if (powerLevel >= 96) {
+        return 4; // Cósmico
+    } else if (powerLevel >= 92) {
+        return 3; // Planetário
+    } else if (powerLevel >= 89) {
+        return 2; // Meta-Humano
+    } else {
+        return 1; // Nível Rua
+    }
   }
 
   // === LÓGICA DAS CONEXÕES DO MULTIVERSO ===
 
   mudarPersonagemCentral(id: number) {
-    if (this.todosPersonagens.length === 0) return;
+    // Previne re-renderização desnecessária se o mesmo personagem for clicado
+    if (this.personagemCentral?.id === id) return;
 
     const novoCentral = this.todosPersonagens.find(p => p.id === id);
     if (!novoCentral) return;
 
     this.personagemCentral = novoCentral;
     this.carregarConexoes(id);
+    this.limparRelacao(); // Limpa a relação em destaque ao trocar de personagem
     this.atualizarIcones();
   }
 
+  mostrarRelacao(relacao: string | undefined) {
+    if (relacao) this.relacaoEmDestaque = relacao;
+  }
+
+  limparRelacao() {
+    this.relacaoEmDestaque = null;
+  }
+
   carregarConexoes(id: number) {
-    const conexoesIds = this.mapaConexoes[id] || [];
-    this.personagensConectados = this.todosPersonagens.filter(p => conexoesIds.includes(p.id));
+    const conexoes = this.mapaConexoes[id] || [];
+    // Mapeia as conexões para incluir a relação no objeto do personagem
+    this.personagensConectados = conexoes.map(conexao => {
+      const personagem = this.todosPersonagens.find(p => p.id === conexao.id);
+      // Retorna uma união do objeto do personagem com a propriedade relacao
+      return { ...personagem!, relacao: conexao.relacao };
+    }).filter(p => p.id); // Filtra caso algum personagem não seja encontrado no array principal
 
     // Garante que sempre tenhamos 4 conexões para exibir, preenchendo com aleatórios se necessário
+    // Personagens aleatórios não terão a propriedade 'relacao'
     while (this.personagensConectados.length < 4 && this.todosPersonagens.length > this.personagensConectados.length + 1) {
       const randomIndex = Math.floor(Math.random() * this.todosPersonagens.length);
       const randomChar = this.todosPersonagens[randomIndex];
+      // Garante que o personagem aleatório não seja o personagem central nem já esteja na lista
       if (randomChar.id !== id && !this.personagensConectados.some(p => p.id === randomChar.id)) {
         this.personagensConectados.push(randomChar);
       }
