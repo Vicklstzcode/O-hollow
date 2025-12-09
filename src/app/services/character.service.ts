@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { CHARACTERS_DATA } from '../data/characters-data'; // Importa a "API"
+import { CHARACTERS_DATA } from '../data/characters-data';
 
-// A interface agora deve incluir todos os campos que usamos
 export interface Character {
   id: number;
   name: string;
@@ -11,7 +10,7 @@ export interface Character {
   type: string;
   power: string;
   image: string;
-  gif?: string; // Adicionamos um campo opcional para o GIF
+  gif?: string;
   color: string;
   symbol?: string;
   history?: string;
@@ -19,7 +18,7 @@ export interface Character {
   affiliations?: string[];
   weaknesses?: string[];
   abilities?: string[];
-  // Power Grid
+
   intelligence?: number;
   strength?: number;
   speed?: number;
@@ -32,14 +31,11 @@ export interface Character {
   providedIn: 'root'
 })
 export class CharacterService {
-  // Chaves para o localStorage
   private readonly CHARACTERS_KEY = 'mysticos_characters';
   private readonly COMMENTS_KEY = 'mysticos_comments';
 
-  // BehaviorSubject para manter e emitir a lista de personagens
   private charactersSubject: BehaviorSubject<Character[]>;
 
-  // Dados estáticos dos universos (poderiam vir de outro lugar)
   private universesData: any = {
     'Marvel': {
       name: 'Marvel',
@@ -61,7 +57,6 @@ export class CharacterService {
     }
   };
 
-  // Mapa de conexões movido para o serviço
   private mapaConexoes: { [key: number]: { id: number, relacao: string }[] } = {
     // Feiticeira Escarlate (1)
     1: [
@@ -153,22 +148,16 @@ export class CharacterService {
   };
 
   constructor() {
-    localStorage.removeItem(this.CHARACTERS_KEY); // TEMPORARY: Clear localStorage to ensure fresh data load.
-    // Ao iniciar o serviço, carrega os dados do localStorage ou usa os dados iniciais
+    localStorage.removeItem(this.CHARACTERS_KEY);
     const storedCharacters = localStorage.getItem(this.CHARACTERS_KEY);
     const initialCharacters = storedCharacters ? JSON.parse(storedCharacters) : CHARACTERS_DATA;
     this.charactersSubject = new BehaviorSubject<Character[]>(initialCharacters);
   }
 
-  // --- MÉTODOS REATIVOS (com Observables) ---
-
   getCharactersObservable(): Observable<Character[]> {
     return this.charactersSubject.asObservable();
   }
 
-  // === MÉTODOS DE LEITURA ===
-
-  // Retorna o valor atual (para componentes não reativos ou acesso síncrono)
   getCharacters() {
     return this.charactersSubject.getValue();
   }
@@ -197,11 +186,8 @@ export class CharacterService {
     return { ...info, characterCount: count };
   }
 
-  // === MÉTODOS DE ESCRITA (Adicionar Personagem) ===
-
   addCharacter(newChar: Character) {
     const currentCharacters = this.getCharacters();
-    // Gera um ID novo (pega o último ID + 1)
     const newId = currentCharacters.length > 0 
         ? Math.max(...currentCharacters.map(c => c.id)) + 1 
         : 1;
@@ -217,7 +203,7 @@ export class CharacterService {
     const index = currentCharacters.findIndex(c => c.id === id);
     if (index > -1) {
       const characters = [...currentCharacters];
-      characters[index] = { ...updatedChar, id: id }; // Ensure ID remains the same
+      characters[index] = { ...updatedChar, id: id };
       this.updateCharacters(characters);
     } else {
       console.warn(`Character with ID ${id} not found for update.`);
@@ -234,18 +220,14 @@ export class CharacterService {
     }
   }
 
-  // Método privado para atualizar o Subject e o localStorage
   private updateCharacters(characters: Character[]) {
     localStorage.setItem(this.CHARACTERS_KEY, JSON.stringify(characters));
     this.charactersSubject.next(characters);
   }
 
-  // === COMENTÁRIOS ===
-
   getComments(characterId: number): any[] {
     const allComments = JSON.parse(localStorage.getItem(this.COMMENTS_KEY) || '{}');
     const comments = allComments[characterId] || [];
-    // Ordena para mostrar os mais recentes primeiro
     return comments.sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }
 
@@ -256,13 +238,11 @@ export class CharacterService {
       allComments[characterId] = [];
     }
     
-    // Adiciona um ID único ao comentário para permitir edição/exclusão
     const newComment = {
       id: Date.now(),
       ...comment
     };
 
-    // Adiciona no início da lista para aparecer primeiro
     allComments[characterId].unshift(newComment); 
     localStorage.setItem(this.COMMENTS_KEY, JSON.stringify(allComments));
   }
@@ -287,7 +267,6 @@ export class CharacterService {
   }
 
   // === FAVORITOS E VOTAÇÃO (Mantidos) ===
-
   getFavorites(): number[] {
     const favs = localStorage.getItem('favorites');
     return favs ? JSON.parse(favs) : [];
