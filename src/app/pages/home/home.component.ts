@@ -17,9 +17,9 @@ declare var lucide: any;
   styleUrl: './home.component.css',
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
-sair() {
-throw new Error('Method not implemented.');
-}
+  sair() {
+    this.authService.logout();
+  }
   // === INSCRIÇÕES (Subscriptions) ===
   private charactersSubscription: Subscription | undefined;
 
