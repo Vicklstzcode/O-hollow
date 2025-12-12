@@ -1,59 +1,34 @@
-# Mysticos
+📖 Mysticos
+Mysticos é uma aplicação web interativa desenvolvida com Angular, projetada para entusiastas de universos de fantasia e ficção.
+A plataforma permite que os usuários explorem, gerenciem e visualizem um catálogo de personagens poderosos e místicos.
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.6.
+Com um sistema de autenticação seguro, os usuários podem criar perfis, personalizar sua experiência e interagir com o conteúdo de forma única.
 
-## Development server
+✨ Funcionalidades Principais
 
-To start a local development server, run:
+🔐 Autenticação de Usuários: Sistema de login seguro para proteger o acesso às funcionalidades da aplicação.
 
-```bash
-ng serve
-```
+🏠 Home Page: Uma galeria principal para visualizar todos os personagens do catálogo.
+👤 Perfil de Usuário: Página onde os usuários podem visualizar e gerenciar suas informações.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+⭐ Favoritos: Funcionalidade que permite aos usuários marcar seus personagens preferidos para acesso rápido.
 
-## Code scaffolding
+📊 Dashboard Interativo: Um painel que apresenta dados e estatísticas sobre os personagens, utilizando gráficos dinâmicos (Chart.js).
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+📄 Páginas de Detalhes: Visualização completa de cada personagem, incluindo suas habilidades, história e outras informações relevantes.
 
-```bash
-ng generate component component-name
-```
+🌌 Filtro por Universo: Navegue e filtre os personagens com base em seus universos de origem (ex: Marvel, DC, etc.).
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+📝 Gerenciamento de Personagens: Formulários para adicionar e editar personagens no catálogo.
 
-```bash
-ng generate --help
-```
+🛠️ Tecnologias Utilizadas
+O projeto foi construído utilizando as seguintes tecnologias:
 
-## Building
+Angular: Framework principal para a construção da interface.
 
-To build the project run:
+TypeScript: Superset do JavaScript que adiciona tipagem estática.
 
-```bash
-ng build
-```
+Chart.js: Biblioteca para a criação de gráficos e visualização de dados no dashboard.
+Lucide Icons: Biblioteca de ícones para uma interface mais limpa e moderna.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+RxJS: Biblioteca para programação reativa.
