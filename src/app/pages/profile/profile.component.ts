@@ -10,7 +10,7 @@ declare var lucide: any;
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent],
+  imports: [CommonModule, NavbarComponent],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })

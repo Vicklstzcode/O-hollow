@@ -1,83 +1,56 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../../services/auth.service'; // Importamos o serviço de autenticação
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit, OnDestroy {
-loginData: any = {};
-loginGoogle() {
-throw new Error('Method not implemented.');
-}
-loginDiscord() {
-throw new Error('Method not implemented.');
-}
-  
-  // === CONTROLE DE INTERFACE ===
+export class LoginComponent implements OnInit {
+  loginData: any = {};
+  cadastroData: any = {};
+
   exibirModal: boolean = false;
   mostrarSenha: boolean = false;
   lgpdAceito: boolean = false;
+  isReady = signal(false);
 
-  // === ANIMAÇÃO DO LOGO ===
-  simbolos: string[] = ["ᱬ", "۞", "⚜️", "ᛝ", "⚡", "💀", "🩸", "🌩️"];
-  simboloAtual: string = this.simbolos[0];
-  opacidadeLogo: number = 1;
-  private intervaloLogo: number | undefined;
+  orbIndices = Array.from({ length: 12 }, (_, i) => i);
 
-  // === CARROSSEL DE TEXTOS ===
-  features = [
-    { icon: "📖", text: "<strong>Explore Dossiês:</strong> Mergulhe em histórias, poderes e afiliações detalhadas." },
-    { icon: "⚔️", text: "<strong>Decida Batalhas:</strong> Vote em confrontos épicos na Arena e veja quem a comunidade acha que venceria." },
-    { icon: "📊", text: "<strong>Analise o Cosmos:</strong> Acesse um dashboard com o balanço de poder entre os universos." },
-    { icon: "❤️", text: "<strong>Crie seu Coven:</strong> Salve seus personagens favoritos em uma coleção pessoal." },
-  ];
-  featureAtualIndex: number = 0;
-  featureAtual = this.features[0];
-  classeAnimacaoCarrossel: string = 'slide-in';
-  private intervaloCarrossel: number | undefined;
-cadastroData: any = {};
-
-  // Injetamos o AuthService e o Router
   constructor(
     private authService: AuthService, 
     private router: Router
   ) {}
 
-  ngOnInit() {
-    this.iniciarRotacaoLogo();
-    this.iniciarCarrossel();
+  ngOnInit(): void {
+    setTimeout(() => this.isReady.set(true), 100);
   }
-
-  ngOnDestroy() {
-    if (this.intervaloLogo) clearInterval(this.intervaloLogo);
-    if (this.intervaloCarrossel) clearInterval(this.intervaloCarrossel);
-  }
-
-  // === AÇÕES ===
 
   fazerLogin() {
     console.log('Autenticando...');
-    // Chama o serviço para logar o usuário
-    // Criamos um objeto User fictício para o login
     this.authService.login({
-      id: 1, // ID fictício
-      name: 'Usuário Teste', // Nome fictício
-      email: 'teste@mysticos.com' // Email fictício
+      id: 1,
+      name: 'Usuário Teste',
+      email: 'teste@mysticos.com'
     });
   }
 
   fazerCadastro() {
-    console.log('Cadastro solicitado...');
+    if (!this.lgpdAceito) {
+      alert('Você precisa aceitar os termos de serviço.');
+      return;
+    }
+    if (this.cadastroData.password !== this.cadastroData.confirmPassword) {
+      alert('As senhas não coincidem!');
+      return;
+    }
+    console.log('Cadastro solicitado com os seguintes dados:', this.cadastroData);
     this.fecharModalCadastro();
-    // Opcional: Já logar o usuário após cadastro
-    // this.authService.login('NovoUsuario');
   }
 
   abrirModalCadastro() {
@@ -91,29 +64,35 @@ cadastroData: any = {};
   alternarVisualizacaoSenha() {
     this.mostrarSenha = !this.mostrarSenha;
   }
-
-  // === LÓGICA DAS ANIMAÇÕES ===
-
-  iniciarRotacaoLogo() {
-    let index = 0;
-    this.intervaloLogo = window.setInterval(() => {
-      this.opacidadeLogo = 0;
-      setTimeout(() => {
-        index = (index + 1) % this.simbolos.length;
-        this.simboloAtual = this.simbolos[index];
-        this.opacidadeLogo = 1;
-      }, 500); 
-    }, 3000);
+  
+  loginGoogle() {
+    console.log('Login com Google não implementado.');
   }
 
-  iniciarCarrossel() {
-    this.intervaloCarrossel = window.setInterval(() => {
-      this.classeAnimacaoCarrossel = 'slide-out';
-      setTimeout(() => {
-        this.featureAtualIndex = (this.featureAtualIndex + 1) % this.features.length;
-        this.featureAtual = this.features[this.featureAtualIndex];
-        this.classeAnimacaoCarrossel = 'slide-in';
-      }, 500); 
-    }, 4000);
+  loginDiscord() {
+    console.log('Login com Discord não implementado.');
+  }
+
+  getOrbPosition(index: number): { top: string; left: string; animationDelay: string; animationDuration: string } {
+    const seed = index * 1234567;
+    const random1 = (Math.sin(seed) * 10000) % 100;
+    const random2 = (Math.cos(seed) * 10000) % 100;
+    
+    return {
+      top: `${Math.abs(random1)}%`,
+      left: `${Math.abs(random2)}%`,
+      animationDelay: `${(index % 4) * 0.5}s`,
+      animationDuration: `${5 + Math.abs((Math.cos(seed) * 10000) % 5)}s`
+    };
+  }
+
+  getOrbColor(index: number): string {
+    const colors = [
+      'from-purple-400 to-pink-400',
+      'from-cyan-400 to-blue-400',
+      'from-pink-400 to-purple-400',
+      'from-yellow-400 to-orange-400'
+    ];
+    return colors[index % colors.length];
   }
 }

@@ -18,13 +18,11 @@ export class PerfilComponent implements OnInit, AfterViewInit {
 
   usuario: User | null = null;
 
-  // Dados do formulário (inicializados com os dados do usuário)
   nomeUsuario: string = '';
   emailUsuario: string = '';
   selectedFile: File | null = null;
   profileImagePreviewUrl: string | ArrayBuffer | null = null;
 
-  // Campos para alteração de senha
   currentPassword = '';
   newPassword = '';
   confirmNewPassword = '';
@@ -67,17 +65,12 @@ export class PerfilComponent implements OnInit, AfterViewInit {
 
   salvarAlteracoes() {
     if (this.usuario && this.nomeUsuario && this.emailUsuario) {
-      // Update name and email
       this.authService.updateUserProfile(this.nomeUsuario, this.emailUsuario);
 
-      // Handle profile image update
       if (this.selectedFile && this.profileImagePreviewUrl) {
-        // In a real application, you would upload the file to a server
-        // and get a URL back. For this example, we'll store the Data URL.
         this.authService.updateProfileImage(this.profileImagePreviewUrl.toString());
       }
 
-      // Optional: Update the local user object after successful save
       this.usuario.name = this.nomeUsuario;
       this.usuario.email = this.emailUsuario;
       if (this.profileImagePreviewUrl) {
@@ -85,10 +78,8 @@ export class PerfilComponent implements OnInit, AfterViewInit {
       }
 
       console.log('Alterações salvas com sucesso!');
-      // TODO: Implement a toast notification or similar feedback for the user
     } else {
       console.error('Não foi possível salvar as alterações: dados inválidos.');
-      // TODO: Implement error feedback
     }
   }
 
@@ -104,17 +95,12 @@ export class PerfilComponent implements OnInit, AfterViewInit {
       // TODO: Implement error feedback
       return;
     }
-    if (this.newPassword.length < 6) { // Example of a simple validation
+    if (this.newPassword.length < 6) {
       console.error('A nova senha deve ter pelo menos 6 caracteres.');
-      // TODO: Implement error feedback
       return;
     }
 
-    // TODO: Call an AuthService method to change the password
-    // For example: this.authService.changePassword(this.currentPassword, this.newPassword);
     console.log('Senha alterada com sucesso (simulado)!');
-    // TODO: Implement a toast notification or similar feedback for the user
-    // Clear password fields after (simulated) successful change
     this.currentPassword = '';
     this.newPassword = '';
     this.confirmNewPassword = '';

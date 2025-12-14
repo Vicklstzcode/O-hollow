@@ -1,19 +1,12 @@
-/* ============================================
-   VARIÁVEIS LOCAIS (Compatibilidade com seu CSS original)
-   ============================================ */
 :host {
     --text-light: #f8f9fa;
     --color-purple-text-light: #d8b4fe;
-    /* Roxo claro */
     --color-purple-text-main: #a855f7;
-    /* Roxo principal */
     --font-weight-bold: 700;
     --font-weight-semibold: 600;
     --font-weight-medium: 500;
     --border-radius-lg: 0.75rem;
-    /* 12px */
     --border-radius-md: 0.375rem;
-    /* 6px */
     --transition-base: 0.3s ease;
 }
 
@@ -110,7 +103,6 @@
     font-size: 1.25rem;
     font-weight: var(--font-weight-semibold);
     color: #ede9fe;
-    /* purple-100 */
     margin: 0;
 }
 
@@ -127,12 +119,10 @@
    3. LISTAS E COMPONENTES
    ============================================ */
 
-/* Animação da Barra de Poder */
 .power-bar-fill {
     transition: width 1.5s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* Badges */
 .badge {
     display: inline-block;
     padding: 0.25rem 0.75rem;
@@ -151,7 +141,6 @@
     border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Toast */
 #toast-container {
     position: fixed;
     top: 80px;

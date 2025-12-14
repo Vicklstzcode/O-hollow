@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router'; // Added Router
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CharacterService, Character } from '../../services/character.service';
 
 @Component({
@@ -19,7 +19,7 @@ export class UniversoComponent implements OnInit {
     private route: ActivatedRoute,
     private characterService: CharacterService,
     private location: Location,
-    private router: Router // Injected Router
+    private router: Router
   ) {}
 
   ngOnInit() {

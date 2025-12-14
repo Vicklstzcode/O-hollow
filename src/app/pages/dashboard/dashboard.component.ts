@@ -4,7 +4,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CharacterService, Character } from '../../services/character.service';
 import { NavbarComponent } from "../home/navbar.component";
-// NavbarComponent import removed: unavailable at the referenced path
 
 // Declarações externas (Chart.js e Lucide)
 declare var Chart: any;
@@ -24,14 +23,11 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   private speciesChart: any;
   private allCharacters: Character[] = [];
 
-  // KPIs (Indicadores)
   totalEntidades: number = 0;
   ameacasAtivas: number = 0;
   novosRegistros: number = 0;
   universosMonitorados: number = 0;
   listaUniversos: string = '';
-
-  // Dados para a Tabela
   atividadesRecentes: any[] = [];
 
   constructor(
@@ -47,30 +43,24 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    // Cancela a inscrição para evitar vazamentos de memória
     if (this.charactersSubscription) {
       this.charactersSubscription.unsubscribe();
     }
   }
 
   ngAfterViewInit() {
-    // O método atualizarDashboard() já cuida da inicialização dos ícones e gráficos.
   }
 
   private atualizarDashboard() {
     this.calcularMetricas();
     this.gerarTabela();
-    // Garante que os gráficos só renderizem depois da view
-    setTimeout(() => this.renderizarGraficos(), 0); // Adicionado para renderizar os gráficos
-    // Atualiza os ícones, incluindo os do novo ranking
+    setTimeout(() => this.renderizarGraficos(), 0);
     setTimeout(() => lucide.createIcons(), 100);
   }
 
   private calcularMetricas() {
     this.totalEntidades = this.allCharacters.length;
-    // Ameaças: Poder >= 95
     this.ameacasAtivas = this.allCharacters.filter(c => c.powerLevel >= 95).length;
-    // Novos: ID > 5 (Simulação)
     this.novosRegistros = this.allCharacters.filter(c => c.id > 5).length;
     
     const unis = [...new Set(this.allCharacters.map(c => c.universe))];
@@ -79,7 +69,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private gerarTabela() {
-    // Ordena por poder e pega os 5 mais fortes (não muta o array original)
     const sorted = [...this.allCharacters].sort((a, b) => b.powerLevel - a.powerLevel);
     this.atividadesRecentes = sorted
       .slice(0, 5)
@@ -107,11 +96,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     console.log('DashboardComponent: renderizarGraficos called. Type of Chart:', typeof Chart);
     if (!this.allCharacters.length || typeof Chart === 'undefined') return;
 
-    // Destrói gráficos antigos antes de renderizar novos
     this.energyChart?.destroy();
     this.speciesChart?.destroy();
-
-    // --- GRÁFICO 1: Barras (Energia Média por Universo) ---
+    
+    // --- GRÁFICO 1: Barras (Poder Médio por Universo) ---
     const unis = [...new Set(this.allCharacters.map(c => c.universe))];
     const mediaPoder = unis.map(u => {
       const chars = this.allCharacters.filter(c => c.universe === u);

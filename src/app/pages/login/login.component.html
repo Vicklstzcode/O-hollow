@@ -1,214 +1,147 @@
-<div class="container">
-  <div class="login-card">
-    <!-- Seção de Apresentação (Esquerda) -->
-    <div class="login-presentation">
-      <div class="presentation-content">
-        <div class="logo-container">
-          <div class="mystic-circle"></div>
-          <div class="dynamic-symbol">{{ simboloAtual }}</div>
-        </div>
+<!-- Main container with entrance animation -->
+<div class="min-h-screen bg-black relative overflow-hidden text-white opacity-0" 
+     [class.fade-in]="isReady()">
 
-        <h1 class="site-title">LENDARIUM</h1>
-        <p class="site-description">
-          O arquivo definitivo sobre as entidades mais poderosas dos
-          multiversos. Aqui, você não apenas lê sobre lendas — você as
-          analisa, compara e decide seu destino.
-        </p>
+  <!-- Background Image -->
+  <div class="absolute inset-0 transition-opacity duration-1000">
+    <img src="https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2071&auto=format&fit=crop" 
+         alt="" class="w-full h-full object-cover" />
+    <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black"></div>
+  </div>
 
-        <div class="features-carousel">
-          <div class="feature-item">
-            <span class="feature-icon">{{ featureAtual.icon }}</span>
-            <span [innerHTML]="featureAtual.text"></span>
-          </div>
-        </div>
+  <!-- Grid Overlay -->
+  <div class="absolute inset-0 grid-overlay opacity-50"></div>
 
-        <p class="site-call-to-action">
-          Adentre o círculo. O conhecimento arcano aguarda.
-        </p>
+  <!-- Floating Orbs/Particles -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    @for (i of orbIndices; track i) {
+      <div class="absolute w-2 h-2 rounded-full blur-sm animate-pulse bg-gradient-to-r"
+           [ngClass]="getOrbColor(i)"
+           [ngStyle]="getOrbPosition(i)">
       </div>
-    </div>
+    }
+  </div>
 
-    <!-- Seção do Formulário (Direita) -->
-    <div class="login-form-section">
-      <div class="form-container">
-        <div class="form-header">
-          <h1 class="form-title">Portal do Coven</h1>
-          <p class="form-subtitle">Adentre o círculo sagrado</p>
+  <!-- Ambient Glow -->
+  <div class="absolute top-1/3 left-1/4 w-96 h-96 from-purple-600 to-pink-600 rounded-full blur-[120px] opacity-20 animate-pulse"></div>
+  <div class="absolute bottom-1/3 right-1/4 w-96 h-96 from-cyan-600 to-purple-600 rounded-full blur-[120px] opacity-20 animate-pulse-delay"></div>
+
+  <!-- Mobile Container -->
+  <div class="relative z-10 min-h-screen flex flex-col justify-center items-center px-4">
+    
+    <div class="w-full max-w-md space-y-8">
+      <!-- Logo -->
+      <div class="flex justify-center fade-in-up stagger-1">
+        <div class="flex items-center gap-2">
+          <svg class="w-8 h-8 text-purple-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+            <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
+          </svg>
+          <span class="text-3xl font-medium bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
+            Mysticos
+          </span>
         </div>
+      </div>
 
-        <form class="login-form" (ngSubmit)="fazerLogin()">
-          <div class="form-group">
-            <label for="username" class="form-label">Usuário</label>
+      <!-- Login Form Card -->
+      <div class="bg-black/30 backdrop-blur-xl border border-white/10 rounded-3xl p-8 space-y-6 fade-in-up stagger-2">
+        <div class="text-center">
+          <h1 class="text-2xl font-bold text-white">Bem-vindo de Volta</h1>
+          <p class="text-purple-300/80">Entre para acessar o Santuário.</p>
+        </div>
+        
+        <form class="space-y-4" (ngSubmit)="fazerLogin()">
+          <div class="relative">
             <input
               type="text"
-              id="username"
               name="username"
-              class="form-input"
               [(ngModel)]="loginData.username"
+              placeholder="Nome de usuário"
               required
-              placeholder="Digite seu usuário..."
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all duration-300"
             />
           </div>
-
-          <div class="form-group">
-            <label for="password" class="form-label">Senha</label>
-            <div class="password-input-wrapper">
-              <input
-                [type]="mostrarSenha ? 'text' : 'password'"
-                id="password"
-                name="password"
-                class="form-input password-input"
-                [(ngModel)]="loginData.password"
-                required
-                placeholder="Digite sua senha..."
-              />
-              <button
-                type="button"
-                class="toggle-password"
-                (click)="alternarVisualizacaoSenha()"
-                aria-label="Mostrar senha"
-              >
-                {{ mostrarSenha ? "ᛝ" : "ᛈ" }}
-              </button>
-            </div>
+          <div class="relative">
+            <input
+              [type]="mostrarSenha ? 'text' : 'password'"
+              name="password"
+              [(ngModel)]="loginData.password"
+              placeholder="Senha"
+              required
+              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all duration-300"
+            />
+            <button type="button" (click)="alternarVisualizacaoSenha()" class="absolute right-3 top-1/2 -translate-y-1/2 text-purple-300/70 hover:text-purple-300">
+              <svg *ngIf="!mostrarSenha" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+              <svg *ngIf="mostrarSenha" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 .946-3.11 3.564-5.394 6.83-6.167M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.5 4.5l15 15" /></svg>
+            </button>
           </div>
-
-          <button type="submit" class="submit-button">Entrar no Coven</button>
+          <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all duration-300 font-bold text-white">
+            Entrar no Santuário
+          </button>
         </form>
+      </div>
 
-        <div class="divider">
-          <div class="divider-line"></div>
-          <span class="divider-text">ou</span>
-          <div class="divider-line"></div>
+      <!-- Social & Register links -->
+      <div class="text-center space-y-6 fade-in-up stagger-3">
+        <div class="flex items-center justify-center gap-4">
+          <div class="flex-grow h-px bg-white/10"></div>
+          <span class="text-sm text-white/40">Ou continue com</span>
+          <div class="flex-grow h-px bg-white/10"></div>
         </div>
 
-        <div class="social-login">
-          <p class="social-login-title">Use sua conta preferida</p>
-          <div class="social-buttons">
-            <button
-              type="button"
-              class="social-button google"
-              (click)="loginGoogle()"
-              aria-label="Entrar com Google"
-            >
-              G
-            </button>
-            <button
-              type="button"
-              class="social-button discord"
-              (click)="loginDiscord()"
-              aria-label="Entrar com Discord"
-            >
-              D
-            </button>
-          </div>
+        <div class="flex justify-center gap-4">
+          <button (click)="loginGoogle()" class="w-14 h-14 flex items-center justify-center bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-colors">
+            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-6 h-6">
+          </button>
+          <button (click)="loginDiscord()" class="w-14 h-14 flex items-center justify-center bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-colors">
+            <img src="https://www.svgrepo.com/show/475631/discord-color.svg" alt="Discord" class="w-6 h-6">
+          </button>
         </div>
-
-        <div class="register-link">
-          <p>
-            Novo iniciado?
-            <button
-              type="button"
-              class="register-modal-trigger"
-              (click)="abrirModalCadastro()"
-            >
-              Crie seu Coven
-            </button>
-          </p>
-        </div>
+        
+        <p class="text-sm text-white/50">
+          Novo por aqui? 
+          <button (click)="abrirModalCadastro()" class="font-medium text-purple-300 hover:text-purple-200 transition-colors">
+            Crie sua conta.
+          </button>
+        </p>
       </div>
     </div>
+
   </div>
 </div>
 
-<!-- ===== MODAL DE CADASTRO ===== -->
-<div class="modal-overlay" *ngIf="exibirModal" (click)="fecharModalCadastro()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <button
-      class="modal-close-btn"
-      (click)="fecharModalCadastro()"
-      aria-label="Fechar modal"
-    >
-      &times;
-    </button>
-
-    <div class="form-header">
-      <h1 class="form-title">Crie seu Coven</h1>
-      <p class="form-subtitle">Junte-se ao círculo e desvende os segredos</p>
+<!-- Registration Modal -->
+<div *ngIf="exibirModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay" (click)="fecharModalCadastro()">
+  <div class="w-full max-w-md bg-black/50 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 space-y-6 fade-in-up" (click)="$event.stopPropagation()">
+    <div class="flex justify-between items-center">
+        <h2 class="text-2xl font-bold text-white">Crie sua Conta</h2>
+        <button (click)="fecharModalCadastro()" class="text-white/50 hover:text-white">&times;</button>
     </div>
-
-    <form class="login-form" (ngSubmit)="fazerCadastro()">
-      <div class="form-group">
-        <label for="regUsername" class="form-label">Usuário</label>
-        <input
-          type="text"
-          id="regUsername"
-          name="regUsername"
-          class="form-input"
-          [(ngModel)]="cadastroData.username"
-          required
-          placeholder="Escolha seu nome arcano..."
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="regEmail" class="form-label">Email</label>
-        <input
-          type="email"
-          id="regEmail"
-          name="regEmail"
-          class="form-input"
-          [(ngModel)]="cadastroData.email"
-          required
-          placeholder="Seu portal de comunicação..."
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="regPassword" class="form-label">Senha</label>
-        <input
-          type="password"
-          id="regPassword"
-          name="regPassword"
-          class="form-input"
-          [(ngModel)]="cadastroData.password"
-          required
-          placeholder="Crie uma chave secreta..."
-        />
-      </div>
-
-      <!-- Seção LGPD -->
-      <div class="lgpd-section">
-        <h3 class="lgpd-title">Termos e Condições (LGPD)</h3>
-        <div class="lgpd-terms">
-          <p>
-            Ao se registrar no Lendarium, você concorda com a coleta e
-            processamento dos seus dados para fins de autenticação e
-            comunicação. Seus dados são protegidos e não serão compartilhados
-            sem seu consentimento.
-            <a
-              href="http://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm"
-              target="_blank"
-              class="lgpd-link"
-            >
-              Lei Geral de Proteção de Dados (LGPD)
-            </a>.
-          </p>
-        </div>
-        <div class="lgpd-consent">
-          <input
-            type="checkbox"
-            id="lgpdAccept"
-            name="lgpdAccept"
-            [(ngModel)]="lgpdAceito"
-            required
-          />
-          <label for="lgpdAccept">Eu li e aceito os termos e condições.</label>
+    
+    <form class="space-y-4" (ngSubmit)="fazerCadastro()">
+      <input type="text" name="regUsername" [(ngModel)]="cadastroData.username" placeholder="Nome de usuário" required class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all">
+      <input type="email" name="regEmail" [(ngModel)]="cadastroData.email" placeholder="Email" required class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all">
+      <input type="password" name="regPassword" [(ngModel)]="cadastroData.password" placeholder="Senha" required class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all">
+      <input type="password" name="confirmPassword" [(ngModel)]="cadastroData.confirmPassword" placeholder="Confirme a Senha" required class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all">
+      <select name="regAffiliation" [(ngModel)]="cadastroData.affiliation" required class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all custom-select">
+        <option value="" disabled selected>Escolha sua Afiliação</option>
+        <option value="heroi">Herói</option>
+        <option value="vilao">Vilão</option>
+        <option value="neutro">Neutro</option>
+      </select>
+      <input type="text" name="regOrigin" [(ngModel)]="cadastroData.origin" placeholder="Qual sua origem? (Ex: Asgard)" required class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all">
+      
+      <div class="pt-2">
+        <div class="flex items-start gap-3">
+          <input id="lgpdAccept" type="checkbox" name="lgpdAccept" [(ngModel)]="lgpdAceito" required class="mt-1 h-4 w-4 accent-purple-500">
+          <label for="lgpdAccept" class="text-sm text-white/60">
+            Eu aceito os <a href="#" class="text-purple-300 hover:underline">Termos de Serviço</a> e a <a href="#" class="text-purple-300 hover:underline">Política de Privacidade</a>.
+          </label>
         </div>
       </div>
 
-      <button type="submit" class="submit-button" [disabled]="!lgpdAceito">
-        Finalizar Iniciação
+      <button type="submit" [disabled]="!lgpdAceito" class="w-full py-4 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] transition-all font-bold text-white disabled:opacity-50 disabled:cursor-not-allowed">
+        Criar Conta
       </button>
     </form>
   </div>

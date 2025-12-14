@@ -1,6 +1,4 @@
 /* ===== ESTILOS ESPECÍFICOS DE FAVORITOS ===== */
-
-/* Destaque no Menu (O brilho rosa que você pediu) */
 .nav-item-active {
     color: white !important;
     text-shadow: 0 0 8px rgba(236, 72, 153, 0.7);
@@ -16,7 +14,6 @@
     height: 100%;
     z-index: 0;
     pointer-events: none;
-    /* Permite clicar no conteúdo acima */
 }
 
 /* ===== REFORÇOS VISUAIS ===== */

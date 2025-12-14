@@ -16,7 +16,6 @@ declare var lucide: any;
 export class FavoritosComponent implements OnInit, AfterViewInit {
   meusFavoritos: Character[] = [];
   
-  // Variáveis para o Toast
   exibirToast: boolean = false;
   mensagemToast: string = '';
   tipoToast: 'success' | 'info' = 'info';
@@ -32,43 +31,33 @@ export class FavoritosComponent implements OnInit, AfterViewInit {
   }
 
   atualizarIcones() {
-    // Pequeno delay para garantir que o HTML foi renderizado
     setTimeout(() => {
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }, 100);
   }
 
   carregarFavoritos() {
-    // 1. Busca a lista de IDs salvos [1, 5, 8...]
     const idsFavoritos = this.characterService.getFavorites();
-    // 2. Busca todos os personagens
     const todos = this.characterService.getCharacters();
-    
-    // 3. Filtra: mantém apenas quem tem o ID na lista de favoritos
     this.meusFavoritos = todos.filter(c => idsFavoritos.includes(c.id));
-    
-    // Atualiza ícones pois o DOM mudou (novos cards ou lista vazia)
     this.atualizarIcones();
   }
 
   removerFavorito(id: number, event: Event) {
-    event.stopPropagation(); // Não abre o card
-    event.preventDefault(); // Não segue o link
+    event.stopPropagation();
+    event.preventDefault();
 
     this.characterService.toggleFavorite(id);
-    
-    // Recarrega a lista para o item sumir imediatamente da tela
     this.carregarFavoritos();
     
     this.mostrarToast('Removido dos favoritos.', 'info');
   }
 
-  // Lógica do Toast (adaptada do seu JS)
   mostrarToast(mensagem: string, tipo: 'success' | 'info') {
     this.mensagemToast = mensagem;
     this.tipoToast = tipo;
     this.exibirToast = true;
-    this.atualizarIcones(); // Para o ícone do toast aparecer
+    this.atualizarIcones();
 
     setTimeout(() => {
       this.exibirToast = false;

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard'; // Importe o guarda
+import { LandingPageComponent } from './pages/landing-page/landing-page.component';
 
 import { LoginComponent } from './pages/login/login.component';
 import { HomeComponent } from './pages/home/home.component';
@@ -11,8 +12,8 @@ import { PerfilComponent } from './pages/perfil/perfil.component';
 import { CharacterFormComponent } from './pages/character-form/character-form.component'; // Import the new component
 
 export const routes: Routes = [
-    // Rota padrão redireciona para login
-    { path: '', redirectTo: 'login', pathMatch: 'full' },
+    // Rota padrão exibe a landing page
+    { path: '', component: LandingPageComponent },
     
     // Login é PÚBLICO (não tem canActivate)
     { path: 'login', component: LoginComponent },

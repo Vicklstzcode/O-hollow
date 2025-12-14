@@ -1,0 +1,189 @@
+<div class="min-h-screen bg-black relative overflow-hidden opacity-0" 
+     [class.fade-in]="isReady()" 
+     [class.fade-out]="isExiting()">
+
+  <!-- Background with Parallax Effect -->
+  <div class="absolute inset-0">
+    @for (slide of slides; track $index) {
+      <div class="absolute inset-0 transition-opacity duration-1000"
+           [class.opacity-100]="$index === currentSlide()"
+           [class.opacity-0]="$index !== currentSlide()">
+        <img [src]="slide.image" alt="" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black"></div>
+      </div>
+    }
+  </div>
+
+  <!-- Grid Overlay -->
+  <div class="absolute inset-0 grid-overlay opacity-50"></div>
+
+  <!-- Floating Orbs/Particles -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    @for (i of orbIndices; track i) {
+      <div class="absolute w-2 h-2 rounded-full blur-sm animate-pulse bg-gradient-to-r"
+           [ngClass]="getOrbColor(i)"
+           [ngStyle]="getOrbPosition(i)">
+      </div>
+    }
+  </div>
+
+  <!-- Mobile Container -->
+  <div class="relative z-10 min-h-screen flex flex-col max-w-md mx-auto">
+    
+    <!-- Top Logo -->
+    <div class="flex justify-center pt-8 pb-4">
+      <div class="flex items-center gap-2">
+        <svg class="w-6 h-6 text-purple-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+          <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
+        </svg>
+        <span class="text-xl bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
+          Mysticos
+        </span>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="flex-1 flex flex-col justify-center px-6 pb-20">
+      
+      @if (currentData().showPortal) {
+        <div class="relative mb-8">
+          <!-- Outer Rotating Rings -->
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="w-72 h-72 border-2 border-purple-500/30 rounded-full animate-spin-slow"></div>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="w-64 h-64 border-2 border-pink-500/30 rounded-full animate-spin-medium"></div>
+          </div>
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div class="w-56 h-56 border-2 border-cyan-500/30 rounded-full animate-spin-fast"></div>
+          </div>
+
+          <!-- Center Portal/Badge -->
+          <div class="relative flex items-center justify-center h-72">
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-48 h-48 rounded-full blur-3xl opacity-60 animate-pulse bg-gradient-to-br"
+                   [ngClass]="currentData().gradient"></div>
+            </div>
+            
+            <div class="relative w-40 h-40 rounded-full border-4 border-white/20 shadow-2xl flex items-center justify-center bg-gradient-to-br"
+                 [ngClass]="currentData().gradient">
+              @if (currentData().showHeroes) {
+                <div class="grid grid-cols-2 gap-2 p-2">
+                  @for (hero of heroes.slice(0, 4); track $index) {
+                    <div class="w-16 h-16 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl flex items-center justify-center hover:scale-110 transition-transform duration-300 overflow-hidden">
+                      <img [src]="hero.image" [alt]="hero.name" class="w-full h-full object-cover">
+                    </div>
+                  }
+                </div>
+              } @else {
+                <span class="text-6xl">{{ currentSlide() + 1 }}</span>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Text Content -->
+      <div class="space-y-6">
+        @if(currentData(); as data) {
+          <div class="text-center space-y-3 px-4">
+            <div class="inline-block px-4 py-1 rounded-full text-xs uppercase tracking-wider bg-gradient-to-r fade-in-up stagger-1" [ngClass]="data.gradient">
+              {{ data.title }}
+            </div>
+            
+            <h1 class="text-3xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent fade-in-up stagger-2">
+              {{ data.heading }}
+            </h1>
+
+            <p class="text-xl italic bg-gradient-to-r bg-clip-text text-transparent fade-in-up stagger-3" [ngClass]="data.gradient">
+              "{{ data.tagline }}"
+            </p>
+
+            <p class="text-purple-200/80 max-w-sm mx-auto leading-relaxed text-sm fade-in-up stagger-4">
+              {{ data.description }}
+            </p>
+          </div>
+        }
+
+        <!-- Heroes List -->
+        @if (currentData().showHeroes) {
+          <div class="space-y-4 pt-4 fade-in-up stagger-4">
+            @for (hero of heroes; track $index) {
+              <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-3 hover:bg-white/10 transition-all duration-300 group overflow-hidden">
+                <div class="flex items-center gap-4">
+                  <img [src]="hero.image" [alt]="hero.name" class="w-12 h-12 rounded-xl object-cover shadow-lg group-hover:scale-110 transition-transform">
+                  <div class="flex-1">
+                    <div class="text-white font-medium">{{ hero.name }}</div>
+                    <div class="text-purple-300 text-sm">{{ hero.power }}</div>
+                  </div>
+                  <div class="w-1 h-8 rounded-full bg-gradient-to-b" [ngClass]="hero.color"></div>
+                </div>
+                <p class="text-purple-200/80 text-sm leading-relaxed mt-3 px-1">
+                  {{ hero.description }}
+                </p>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Feature Highlights for last slide -->
+        @if (isLastSlide()) {
+          <div class="grid grid-cols-3 gap-3 pt-4 fade-in-up stagger-4">
+            @for (feature of features; track $index) {
+              <div class="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 text-center hover:bg-white/10 transition-all duration-300">
+                <div class="w-3 h-3 mx-auto mb-2 rounded-full bg-gradient-to-r" [ngClass]="currentData().gradient"></div>
+                <div class="text-purple-200 text-xs">{{ feature }}</div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div class="px-6 pb-8 space-y-6">
+      
+      <!-- Progress Indicator -->
+      <div class="flex gap-2 justify-center">
+        @for (slide of slides; track $index) {
+          <div class="h-1 rounded-full transition-all duration-300"
+               [ngClass]="{
+                 'w-12 bg-gradient-to-r': $index === currentSlide(),
+                 'w-6 bg-white/40': $index < currentSlide(),
+                 'w-6 bg-white/20': $index > currentSlide()
+               }"
+               [class]="$index === currentSlide() ? currentData().gradient : ''">
+          </div>
+        }
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="flex gap-3">
+        @if (currentSlide() > 0) {
+          <button (click)="previousSlide()" class="px-6 py-4 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl hover:bg-white/20 transition-all duration-300 flex items-center gap-2">
+            <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            <span class="text-white text-sm">Voltar</span>
+          </button>
+        }
+        
+        <button (click)="nextSlide()" class="flex-1 py-4 rounded-2xl hover:shadow-[0_0_40px_rgba(168,85,247,0.6)] transition-all duration-300 flex items-center justify-center gap-2 group bg-gradient-to-r" [ngClass]="currentData().gradient">
+          <span class="text-white">
+            {{ isLastSlide() ? 'Entrar no Santuário' : 'Próximo' }}
+          </span>
+          <svg class="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      @if (!isLastSlide()) {
+        <button (click)="skipToEnd()" class="w-full text-center text-purple-300 hover:text-purple-200 transition-colors text-sm">
+          Pular introdução
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Ambient Glow -->
+  <div class="absolute top-1/3 left-1/4 w-96 h-96 rounded-full blur-[120px] opacity-20 animate-pulse bg-gradient-to-r" [ngClass]="currentData().gradient"></div>
+  <div class="absolute bottom-1/3 right-1/4 w-96 h-96 rounded-full blur-[120px] opacity-20 animate-pulse-delay bg-gradient-to-r" [ngClass]="currentData().gradient"></div>
+</div>

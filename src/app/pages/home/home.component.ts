@@ -2,11 +2,10 @@ import { Component, OnInit, AfterViewInit, OnDestroy, Inject, HostListener } fro
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { CharacterService, Character } from '../../services/character.service';
-import { AuthService, User } from '../../services/auth.service'; // Importe User do auth.service
-import { Subscription } from 'rxjs'; // Importe Subscription do rxjs
+import { AuthService, User } from '../../services/auth.service';
+import { Subscription } from 'rxjs';
 import { NavbarComponent } from './navbar.component';
 
-// Declaração para os ícones Lucide
 declare var lucide: any;
 
 @Component({
@@ -27,7 +26,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   mostrarBotaoVoltarAoTopo: boolean = false;
 
   // === AUTENTICAÇÃO ===
-  usuario: User | null = null; // User type is not exported from auth.service
+  usuario: User | null = null;
   get usuarioLogado(): boolean {
     return this.authService.isAuthenticated();
   }
@@ -60,7 +59,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // === CARROSSEL ===
   carouselIndex: number = 0;
   carouselItems: Character[] = [];
-  private intervaloCarrossel: any; // Correção: NodeJS.Timeout para any
+  private intervaloCarrossel: any;
 
   // === NÍVEL DE AMEAÇA ===
   personagemAmeaca: Character | undefined;
@@ -79,12 +78,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // === CONEXÕES DO MULTIVERSO ===
   personagemCentral: Character | undefined;
   personagensConectados: (Character & { relacao?: string })[] = [];
-  carregandoConexoes: boolean = false; // Adiciona um estado de carregamento
+  carregandoConexoes: boolean = false;
 
   constructor(
     private characterService: CharacterService,
     private router: Router,
-    private route: ActivatedRoute, // Adicionado para ler parâmetros da rota
+    private route: ActivatedRoute,
     private authService: AuthService,
     @Inject(DOCUMENT) private document: Document
   ) {}
@@ -251,7 +250,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     const correctLevel = this.niveisAmeaca.find(n => n.id === correctLevelId);
     if (!correctLevel) return 'Nível de ameaça desconhecido.';
 
-    // Helper para gerar uma razão descritiva para uma escolha de nível específica
     const getDescriptiveReason = (levelId: number, char: Character): string => {
         switch (levelId) {
             case 1: // Nível Rua
@@ -275,7 +273,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         return `Correto! O nível de ameaça de ${character.name} é <strong>${correctLevel.nome}</strong>, pois é capaz de ${correctReason}.`;
     } else {
         const userLevel = this.niveisAmeaca.find(n => n.id === votoUsuario);
-        // Caso não encontre o nível do usuário (não deve acontecer)
         if (!userLevel) { 
             return `Incorreto. A resposta certa é <strong>${correctLevel.nome}</strong>, pois ${character.name} é capaz de ${correctReason}.`;
         }
@@ -302,8 +299,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   // === LÓGICA DAS CONEXÕES DO MULTIVERSO ===
-
-  // Método para selecionar um personagem central aleatório
   pickRandomCentralCharacter() {
     if (this.todosPersonagens.length === 0) return;
     const randomIndex = Math.floor(Math.random() * this.todosPersonagens.length);
@@ -312,37 +307,29 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   mudarPersonagemCentral(id: number) {
-    // Previne re-renderização e cliques enquanto carrega
     if (this.personagemCentral?.id === id || this.carregandoConexoes) return;
   
     this.carregandoConexoes = true;
-    this.personagensConectados = []; // Limpa as conexões antigas imediatamente
-    
-    // Encontra o novo personagem central e o define
+    this.personagensConectados = [];
     this.personagemCentral = this.todosPersonagens.find(p => p.id === id);
   
-    // Timeout para dar uma sensação de transição e evitar flickers
     setTimeout(() => {
       if (this.personagemCentral) {
         this.carregarConexoes(this.personagemCentral.id);
       } else {
-        // Se o personagem central não for encontrado (ID inválido), seleciona um aleatório
         this.pickRandomCentralCharacter();
       }
       this.carregandoConexoes = false;
       this.atualizarIcones();
-    }, 500); // Aumentado para 500ms para uma transição mais suave
+    }, 500);
   }
 
   carregarConexoes(id: number) {
     const conexoes = this.characterService.getConnectionsFor(id);
-    
-    // Mapeia as conexões para incluir a relação no objeto do personagem
     this.personagensConectados = conexoes.map(conexao => {
       const personagem = this.todosPersonagens.find(p => p.id === conexao.id);
-      // Retorna uma união do objeto do personagem com a propriedade relacao
       return { ...personagem!, relacao: conexao.relacao };
-    }).filter(p => p && p.id); // Filtra caso algum personagem não seja encontrado
+    }).filter(p => p && p.id);
   }
 
   // === AÇÕES ===

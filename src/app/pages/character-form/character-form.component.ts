@@ -4,7 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { CharacterService, Character } from '../../services/character.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavbarComponent } from "../home/navbar.component";
-import { MetadataService } from '../../services/metadata.service'; // Import MetadataService
+import { MetadataService } from '../../services/metadata.service';
 
 @Component({
   selector: 'app-character-form',
@@ -18,7 +18,6 @@ export class CharacterFormComponent implements OnInit {
   isEditing: boolean = false;
   characterId: number | null = null;
   
-  // Dynamic data for categories
   universes: string[] = [];
   types: string[] = [];
   powers: string[] = [];
@@ -28,7 +27,7 @@ export class CharacterFormComponent implements OnInit {
     private characterService: CharacterService,
     private route: ActivatedRoute,
     private router: Router,
-    private metadataService: MetadataService // Inject MetadataService
+    private metadataService: MetadataService
   ) {
     this.characterForm = this.fb.group({
       id: [null],
@@ -37,10 +36,10 @@ export class CharacterFormComponent implements OnInit {
       universe: ['', Validators.required],
       type: ['', Validators.required],
       power: ['', Validators.required],
-      image: ['', Validators.required], // Should be a URL or path
-      gif: [''], // Optional
-      color: ['#000000'], // Default color
-      symbol: [''], // Optional
+      image: ['', Validators.required],
+      gif: [''],
+      color: ['#000000'],
+      symbol: [''],
       history: [''],
       powerLevel: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
       affiliations: [[]],
@@ -56,7 +55,6 @@ export class CharacterFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Fetch dynamic data from MetadataService
     this.metadataService.getUniverses().subscribe(data => this.universes = data);
     this.metadataService.getTypes().subscribe(data => this.types = data);
     this.metadataService.getPowers().subscribe(data => this.powers = data);
@@ -68,7 +66,6 @@ export class CharacterFormComponent implements OnInit {
         this.characterId = +id;
         const character = this.characterService.getCharacterById(this.characterId);
         if (character) {
-          // Flatten array fields for form display if needed, or handle in custom controls
           this.characterForm.patchValue({
             ...character,
             affiliations: character.affiliations ? character.affiliations.join(', ') : '',
@@ -77,8 +74,7 @@ export class CharacterFormComponent implements OnInit {
           });
         } else {
           console.warn(`Character with id ${this.characterId} not found.`);
-          // Optionally redirect or show an error
-          this.router.navigate(['/home']); // Redirect to home if character not found
+          this.router.navigate(['/home']);
         }
       }
     });
@@ -87,8 +83,7 @@ export class CharacterFormComponent implements OnInit {
   onSubmit(): void {
     if (this.characterForm.valid) {
       const formValue = this.characterForm.value;
-      
-      // Convert comma-separated strings back to arrays
+
       const character: Character = {
         ...formValue,
         affiliations: formValue.affiliations ? formValue.affiliations.split(',').map((s: string) => s.trim()) : [],
@@ -97,15 +92,13 @@ export class CharacterFormComponent implements OnInit {
       };
 
       if (this.isEditing && this.characterId !== null) {
-        // Update existing character
         this.characterService.updateCharacter(this.characterId, character);
       } else {
-        // Add new character
+
         this.characterService.addCharacter(character);
       }
-      this.router.navigate(['/home']); // Redirect to home after submission
+      this.router.navigate(['/home']);
     } else {
-      // Optionally show validation errors
       console.error('Form is invalid. Please check all fields.');
       this.markAllAsTouched(this.characterForm);
     }
@@ -121,10 +114,9 @@ export class CharacterFormComponent implements OnInit {
   }
 
   navigateToDashboard(): void {
-    this.router.navigate(['/home']); // Navigate to the home page
+    this.router.navigate(['/home']);
   }
 
-  // Helper to convert comma-separated string to array
   private toArray(value: string | string[]): string[] {
     if (Array.isArray(value)) {
       return value;

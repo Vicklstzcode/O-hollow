@@ -5,7 +5,7 @@ export interface Achievement {
   id: string;
   name: string;
   description: string;
-  icon: string; // lucide icon name
+  icon: string;
   earned: boolean;
 }
 
@@ -46,7 +46,6 @@ export class AchievementService {
     if (achievement && !achievement.earned) {
       achievement.earned = true;
       this.updateAchievements(currentAchievements);
-      // Here you could add a toast notification to inform the user
       console.log(`Achievement Unlocked: ${achievement.name}`);
     }
   }
@@ -55,8 +54,6 @@ export class AchievementService {
     localStorage.setItem(this.ACHIEVEMENTS_KEY, JSON.stringify(achievements));
     this.achievementsSubject.next(achievements);
   }
-
-  // --- Tracking Methods ---
 
   trackPageVisit(characterId: number) {
     const visitedPages = this.getTrackedData('visitedPages');

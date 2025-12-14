@@ -1,11 +1,11 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common'; 
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms'; // Importado para o ngModel
+import { FormsModule } from '@angular/forms';
 import { CharacterService, Character } from '../../services/character.service';
 import { AuthService } from '../../services/auth.service';
-import { AchievementService } from '../../services/achievement.service'; // Importe o novo serviço
-import { NavbarComponent } from "../home/navbar.component"; // Importado para verificar login
+import { AchievementService } from '../../services/achievement.service';
+import { NavbarComponent } from "../home/navbar.component";
 import { PowerGridComponent } from '../../components/power-grid/power-grid.component';
 
 // Declaração para usar ícones Lucide
@@ -48,37 +48,29 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
   }
 
   constructor(
-    private route: ActivatedRoute, // Lê a URL
-    private characterService: CharacterService, // Busca os dados
-    private location: Location, // Serve para o botão "Voltar"
-    private authService: AuthService, // Injetado para os comentários
-    private achievementService: AchievementService // Injetado para as conquistas
+    private route: ActivatedRoute,
+    private characterService: CharacterService,
+    private location: Location,
+    private authService: AuthService,
+    private achievementService: AchievementService
   ) {}
 
   ngOnInit() {
-    // Se inscreve para "ouvir" mudanças no ID da URL
     this.route.paramMap.subscribe(params => {
       const id = Number(params.get('id'));
       if (id) {
         this.personagem = this.characterService.getCharacterById(id);
         
         if (this.personagem) {
-          this.encontrado = true; // Garante que a flag de erro seja resetada
-          // Se achou, verifica se já é favorito
+          this.encontrado = true;
           this.ehFavorito = this.characterService.getFavorites().includes(this.personagem.id);
-          // E carrega os comentários
           this.carregarComentarios();
-          // Carrega a contagem de favoritos para a navbar
           this.favoritosCount = this.characterService.getFavorites().length;
           
-          // --- GAMIFICATION ---
           this.achievementService.trackPageVisit(this.personagem.id);
-          // --------------------
-
-          // Atualiza os ícones da página
+         
           this.atualizarIcones();
         } else {
-          // Se não achou (ex: ID 999), mostra erro
           this.encontrado = false;
         }
       }
@@ -101,18 +93,13 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
 
   toggleFavorito() {
     if (this.personagem) {
-      // Chama o serviço para adicionar/remover
       const adicionou = this.characterService.toggleFavorite(this.personagem.id);
-      this.ehFavorito = adicionou; // Atualiza o ícone (cheio ou vazio)
+      this.ehFavorito = adicionou;
       
-      // Atualiza a contagem de favoritos para a navbar
       this.favoritosCount = this.characterService.getFavorites().length;
       
-      // --- GAMIFICATION ---
       this.achievementService.trackFavorite();
-      // --------------------
-      
-      // Mostra o Toast (igual ao seu JS)
+
       if (adicionou) {
         this.mostrarToast('Adicionado aos favoritos!', 'success');
       } else {
@@ -133,7 +120,7 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
     this.mensagemToast = mensagem;
     this.tipoToast = tipo;
     this.exibirToast = true;
-    this.atualizarIcones(); // Para garantir que o ícone do toast apareça
+    this.atualizarIcones();
 
     setTimeout(() => {
       this.exibirToast = false;
@@ -152,20 +139,19 @@ export class DetalhesComponent implements OnInit, AfterViewInit {
     if (!this.novoComentario.trim() || !this.personagem) return;
 
     const comentario = {
-      user: 'Usuário Logado', // Em um app real, viria do authService com dados do usuário
+      user: 'Usuário Logado',
       date: new Date().toISOString(),
       text: this.novoComentario.trim()
     };
 
     this.characterService.addComment(this.personagem.id, comentario);
-    this.novoComentario = ''; // Limpa o campo
-    this.carregarComentarios(); // Recarrega a lista de comentários
+    this.novoComentario = '';
+    this.carregarComentarios();
     
     // --- GAMIFICATION ---
     this.achievementService.trackComment();
-    // --------------------
 
-    this.atualizarIcones(); // Garante que ícones de usuário sejam renderizados
+    this.atualizarIcones();
   }
 
   iniciarEdicao(comentario: any) {
