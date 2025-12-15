@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
   fazerLogin() {
     console.log('Autenticando...');
     this.authService.login({
-      id: 1,
+      id: '1',
       name: 'Usuário Teste',
       email: 'teste@mysticos.com'
     });

@@ -3,10 +3,14 @@ import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 
 export interface User {
-  id: number;
+  id: string; // Changed from number to string
   name: string;
   email: string;
   profileImageUrl?: string;
+  tag?: string; // New field
+  createdAt?: string; // New field
+  affiliation?: string; // New field
+  origin?: string; // New field
 }
 
 @Injectable({
@@ -53,10 +57,10 @@ export class AuthService {
     return null;
   }
 
-  updateUserProfile(name: string, email: string): void {
+  updateUserProfile(name: string, email: string, affiliation?: string, origin?: string): void {
     const currentUser = this.getCurrentUser();
     if (currentUser) {
-      const updatedUser = { ...currentUser, name, email };
+      const updatedUser = { ...currentUser, name, email, affiliation, origin };
       localStorage.setItem(this.userKey, JSON.stringify(updatedUser));
       this.currentUserSubject.next(updatedUser);
       console.log('User profile updated successfully:', updatedUser);

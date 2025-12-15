@@ -19,6 +19,7 @@ interface Slide {
   gradient: string;
   showHeroes: boolean;
   showPortal: boolean;
+  symbolImage?: string; // Add this line
 }
 
 @Component({
@@ -80,6 +81,7 @@ export class LandingPageComponent implements OnInit {
       gradient: 'from-purple-600 to-pink-600',
       showHeroes: false,
       showPortal: true,
+      symbolImage: 'imagens/Loki.jpg', // Added
     },
     {
       title: 'Guardiões do Véu',
@@ -100,6 +102,7 @@ export class LandingPageComponent implements OnInit {
       gradient: 'from-cyan-600 to-purple-600',
       showHeroes: false,
       showPortal: false,
+      symbolImage: 'imagens/Storm.jpg', // Added
     },
     {
       title: 'Seu Legado Começa',
@@ -110,6 +113,7 @@ export class LandingPageComponent implements OnInit {
       gradient: 'from-purple-600 via-pink-600 to-cyan-600',
       showHeroes: false,
       showPortal: false,
+      symbolImage: 'imagens/SabrinaSpellman.jpg', // Added
     },
   ];
 
