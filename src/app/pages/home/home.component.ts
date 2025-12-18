@@ -89,31 +89,26 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    // Lê o parâmetro 'filtro' da URL, se existir
     this.route.queryParams.subscribe(params => {
       const filtroDaUrl = params['filtro'];
       if (filtroDaUrl && this.filtros.includes(filtroDaUrl)) {
         this.filtroAtual = filtroDaUrl;
-        // Se o filtro veio da URL, aplicamos e rolamos para a seção
         this.mudarFiltro(this.filtroAtual);
         this.scrollToSection('featured-section');
       }
     });
 
-    // 1. Inscreve-se para receber atualizações dos personagens
     this.charactersSubscription = this.characterService.getCharactersObservable().subscribe(characters => {
       this.todosPersonagens = characters;
-      this.mudarFiltro(this.filtroAtual); // Reaplica o filtro atual com os novos dados
-      this.carouselItems = this.todosPersonagens; // Agora o carrossel usa todos os personagens
+      this.mudarFiltro(this.filtroAtual);
+      this.carouselItems = this.todosPersonagens;
       
-      // Inicia as novas seções se ainda não foram iniciadas
       if (!this.personagemAmeaca) this.novoDesafioAmeaca();
-      if (!this.personagemCentral) this.mudarPersonagemCentral(1); // Inicia com Feiticeira Escarlate (ID 1)
+      if (!this.personagemCentral) this.mudarPersonagemCentral(1);
 
       this.atualizarIcones();
     });
 
-    // 2. Carrega dados que não são reativos (ou que são gerenciados separadamente)
     this.favoritos = this.characterService.getFavorites();
     if (this.usuarioLogado) {
       this.usuario = this.authService.getCurrentUser();
@@ -138,7 +133,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }, 100);
   }
 
-  // Otimização para o *ngFor
   trackByPersonagemId(index: number, item: Character): number {
     return item.id;
   }
@@ -158,19 +152,15 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   aplicarFiltros() {
     this.filtrandoPersonagens = true;
 
-    // Usamos um pequeno setTimeout para garantir que o loader seja exibido na tela
-    // antes que a filtragem (que pode ser muito rápida) termine.
     setTimeout(() => {
       let personagens = this.todosPersonagens;
 
-      // 1. Aplica o filtro de categoria (Universo/Tipo)
       if (this.filtroAtual !== 'Todos') {
         personagens = personagens.filter(c => 
           c.universe === this.filtroAtual || c.type === this.filtroAtual
         );
       }
 
-      // 2. Aplica o filtro de busca sobre o resultado anterior
       if (this.termoBusca) {
         personagens = personagens.filter(c => 
           c.name.toLowerCase().includes(this.termoBusca) || 
@@ -179,13 +169,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       }
 
       this.personagensFiltrados = personagens;
-      
-      // Se o filtro for 'Todos', agrupa os personagens para a exibição especial
+
       if (this.filtroAtual === 'Todos') this.groupCharacters(this.personagensFiltrados);
 
-      this.filtrandoPersonagens = false; // Esconde o loader
-      this.atualizarIcones(); // Atualiza os ícones dos novos cards
-    }, 250); // Um delay de 250ms é suficiente para a percepção visual.
+      this.filtrandoPersonagens = false;
+      this.atualizarIcones();
+    }, 250);
   }
 
   // === LÓGICA DO CARROSSEL ===
@@ -240,8 +229,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     const correctLevelId = this.getThreatLevelId(this.personagemAmeaca.powerLevel);
     this.acertou = nivelId === correctLevelId;
     this.ameacaVotada = true;
-    
-    // Gera a explicação detalhada, agora passando o voto do usuário
     this.explicacao = this.getExplicacaoAmeaca(this.personagemAmeaca, this.acertou, this.votoUsuario);
   }
 

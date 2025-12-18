@@ -15,12 +15,10 @@ declare var lucide: any;
 })
 export class NavbarComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
   @Input() favoritesCount: number = 0;
-  
-  // A navbar agora gerencia o estado de login e os dados do usuário
+
   usuarioLogado: boolean = false;
   usuario: User | null = null;
   
-  // Inscrições para os observables do AuthService
   private authSubscription: Subscription | undefined;
   private userSubscription: Subscription | undefined;
 
@@ -34,13 +32,11 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnChanges, OnDest
   constructor(private authService: AuthService) {}
 
   ngOnInit() {
-    // Inscreve-se para ouvir mudanças no estado de autenticação
     this.authSubscription = this.authService.isAuthenticated$.subscribe(isAuth => {
       this.usuarioLogado = isAuth;
       this.atualizarIcones();
     });
 
-    // Inscreve-se para ouvir mudanças nos dados do usuário
     this.userSubscription = this.authService.currentUser$.subscribe(user => {
       this.usuario = user;
     });
@@ -52,7 +48,6 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnChanges, OnDest
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    // Garante que o contador de favoritos atualize os ícones se necessário
     if (changes['favoritesCount']) {
       this.atualizarIcones();
     }
@@ -68,11 +63,10 @@ export class NavbarComponent implements OnInit, AfterViewInit, OnChanges, OnDest
 
   toggleMobileMenu() {
     this.mobileMenuAberto = !this.mobileMenuAberto;
-    this.atualizarIcones(); // Garante que ícones no menu (como o 'x') sejam renderizados
+    this.atualizarIcones();
   }
 
-  handleLogout() {
-    // A navbar agora pode chamar o logout diretamente
+  handleLogout() {+
     this.authService.logout();
   }
 }
