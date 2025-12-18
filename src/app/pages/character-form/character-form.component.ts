@@ -17,6 +17,7 @@ export class CharacterFormComponent implements OnInit {
   characterForm: FormGroup;
   isEditing: boolean = false;
   characterId: number | null = null;
+  imagePreview: string | ArrayBuffer | null = null;
   
   universes: string[] = [];
   types: string[] = [];
@@ -72,12 +73,28 @@ export class CharacterFormComponent implements OnInit {
             weaknesses: character.weaknesses ? character.weaknesses.join(', ') : '',
             abilities: character.abilities ? character.abilities.join(', ') : '',
           });
+          if (character.image) {
+            this.imagePreview = character.image;
+          }
         } else {
           console.warn(`Character with id ${this.characterId} not found.`);
           this.router.navigate(['/home']);
         }
       }
     });
+  }
+
+  onFileSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imagePreview = reader.result;
+        this.characterForm.patchValue({ image: reader.result as string });
+        this.characterForm.get('image')?.updateValueAndValidity();
+      };
+      reader.readAsDataURL(file);
+    }
   }
 
   onSubmit(): void {
